@@ -13,29 +13,30 @@ module.exports = function(grunt) {
   // Please see the Grunt documentation for more information regarding task
   // creation: http://gruntjs.com/creating-tasks
 
-  // TODO: add support for optional 'find' option to allow specification of regexp of text to replace. In the absence of 'find' option, use 'text' to generate this regexp. In 'text' value, use '<%= pass(n) %>' to specify passthru values, where n is the index of a capturing group from the 'field' (regexp) value.
+  // TODO: add support for optional 'find' option to allow specification of regexp of text to replace. In the absence of 'find' option, use 'text' to generate this regexp. In 'text' value, use '{{= grunt.template.pass(n) }}' to specify passthru values, where n is the index of a capturing group from the 'find' (regexp) value.
   grunt.registerMultiTask('file_info', 'Display file info and optionally write it to a file (eg, for self-documenting src file sizes).', function() {
     var fileContents;
     var that = this;
     var i;
+    var orig_size, mini_size, gzip_size;
 
     if (this.data.original) {
       fileContents = grunt.file.read(this.data.original);
-      this.data.orig_size_str = size_string(fileContents.length, 8);
+      this.data.orig_size_str = stringifySize(orig_size = fileContents.length);
     }
 
     if (this.data.gzipped) {
       if (this.data.gzipped !== this.data.original) {
         fileContents = grunt.file.read(this.data.gzipped);
       }
-      this.data.gzip_size_str = size_string(fileContents ? require('zlib-browserify').gzipSync(fileContents).length : 0, 8);
+      this.data.gzip_size_str = stringifySize(gzip_size = fileContents ? require('zlib-browserify').gzipSync(fileContents).length : 0);
     }
 
     if (this.data.minified) {
       if ((this.data.gzipped && this.data.minified !== this.data.gzipped) || (!this.data.gzipped && (this.data.minified !== this.data.original))) {
         fileContents = grunt.file.read(this.data.minified);
       }
-      this.data.mini_size_str = size_string(fileContents.length, 8);
+      this.data.mini_size_str = stringifySize(mini_size = fileContents.length);
     }
 
     var impacts = {}; // for values that either increased or decreased, add a property where name is fieldIndex and value is bytes delta (positive if up, negative if down)
@@ -84,7 +85,7 @@ module.exports = function(grunt) {
       var delta;
       for (; i > 0; i--) {
         //  console.log(grunt.util._.lpad(grunt.util._.trim(this.data.currentValues[i]), 8), ' -->', grunt.util._.lpad(grunt.util._.trim(newValues[i]), 8));
-        if (delta = sizeDelta(this.data.currentValues[i], newValues[i])) {
+        if (delta = byteSizeDelta(this.data.currentValues[i], newValues[i])) {
           impacts[i] = delta;
         }
       }
@@ -137,25 +138,25 @@ module.exports = function(grunt) {
     if (!Object.keys(impacts).length) {
       grunt.log.writeln(grunt.util.linefeed +
         (('  ' + this.target + ' version sizes:').cyan) + grunt.util.linefeed +
-        (this.data.original ? grunt.util.linefeed + '  Original: '.grey + this.data.orig_size_str.grey : '') +
-        (this.data.minified ? grunt.util.linefeed + '  Minified: '.grey + this.data.mini_size_str.grey : '') +
-        (this.data.gzipped ? grunt.util.linefeed + '  Gzipped:  '.grey + this.data.gzip_size_str.grey : ''));
+        (this.data.original ? grunt.util.linefeed + '  Original: '.grey + stringifySize(orig_size, 8).grey : '') +
+        (this.data.minified ? grunt.util.linefeed + '  Minified: '.grey + stringifySize(mini_size, 8).grey : '') +
+        (this.data.gzipped ? grunt.util.linefeed + '  Gzipped:  '.grey + stringifySize(gzip_size, 8).grey : ''));
     }
   });
 
   var reTemplateField = new RegExp('\\{\\{.*?\\}\\}', 'g');
 
-  // returns the delta in bytes. eg, sizeDelta('2 kB', '2 bytes') -- > -1998
+  // returns the delta in bytes. eg, byteSizeDelta('2 kB', '2 bytes') -- > -1998
 
-  function sizeDelta(str1, str2) {
+  function byteSizeDelta(str1, str2) {
     var float1, float2;
 
     if (str1) {
-      float1 = getNumericEquivalent(str1);
+      float1 = parseByteSize(str1);
 
       if (float1 || float1 === 0) {
         if (str2) {
-          float2 = getNumericEquivalent(str2);
+          float2 = parseByteSize(str2);
 
           if (float2 || float2 === 0) {
             return float2 - float1;
@@ -169,7 +170,7 @@ module.exports = function(grunt) {
     return 0;
   }
 
-  function getNumericEquivalent(str) {
+  function parseByteSize(str) {
     var ret = parseFloat(str) || 0;
 
     if (/kB/i.test(str)) {
@@ -183,34 +184,40 @@ module.exports = function(grunt) {
 
   // return left-padded integer-right-aligned number string
 
-  function size_string(num, lpadding) {
+  function stringifySize(num, lpadding) {
     var numStr;
 
     if (num > 999999) {
       numStr = '' + Math.round(num / 100000) / 10;
 
-      if (/\./.test(numStr)) {
-        lpadding += 2;
+      if (lpadding) {
+        if (/\./.test(numStr)) {
+          lpadding += 2;
+        }
+        lpadding -= numStr.length;
+        lpadding -= 4;
       }
-      lpadding -= numStr.length;
-      lpadding -= 4;
       numStr += ' MB';
     } else if (num > 999) {
       numStr = '' + Math.round(num / 100) / 10;
 
-      if (/\./.test(numStr)) {
-        lpadding += 2;
+      if (lpadding) {
+        if (/\./.test(numStr)) {
+          lpadding += 2;
+        }
+        lpadding -= numStr.length;
       }
-      lpadding -= numStr.length;
       numStr += ' kB';
     } else {
       numStr = '' + num;
 
-      lpadding -= numStr.length;
-      lpadding += 4;
+      if (lpadding) {
+        lpadding -= numStr.length;
+        lpadding += 4;
+      }
       numStr += ' bytes';
     }
 
-    return grunt.util.repeat(lpadding, ' ') + numStr;
+    return (lpadding ? grunt.util.repeat(lpadding, ' ') : '') + numStr;
   }
 };
