@@ -1,6 +1,6 @@
 # grunt-file-info
 
-> Display file info and optionally write it to a file (eg, for self-documenting src file sizes).
+> Display file info and optionally inject it into a file (eg, for self-documenting src file sizes).
 
 ## Getting Started
 This plugin requires Grunt `~0.4.2`
