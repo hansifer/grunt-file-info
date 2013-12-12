@@ -1,7 +1,7 @@
 {
   "name": "grunt-file-info",
   "description": "Display file info and optionally inject it into a file (eg, for self-documenting src file sizes).",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "homepage": "https://github.com/hansifer/grunt-file-info",
   "author": {
     "name": "Hans Meyer",
@@ -35,10 +35,10 @@
     "grunt-contrib-jshint": "~0.6.0",
     "grunt-contrib-clean": "~0.4.0",
     "grunt-contrib-nodeunit": "~0.2.0",
-    "grunt": "~0.4.2"
+    "grunt": "~0.4.1"
   },
   "peerDependencies": {
-    "grunt": "~0.4.2"
+    "grunt": "~0.4.1"
   },
   "keywords": [
     "gruntplugin"
