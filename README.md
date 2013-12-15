@@ -46,7 +46,7 @@ grunt.initConfig({
     stdout: grunt.util.linefeed + 
     'Original: {{= sizeText(size(src[0]), 7) }}' + grunt.util.linefeed + 
     'Minified: {{= sizeText(size(src[1]), 7) }}' + grunt.util.linefeed + 
-    'Gzipped:  {{= sizeText(gzipSize("minified_source_file.js"), 7) }} ({{= spaceSavings("minified_source_file.js") }}% savings)' + grunt.util.linefeed
+    'Gzipped:  {{= sizeText(gzipSize(src[1]), 7) }} ({{= spaceSavings(src[1]) }}% savings)' + grunt.util.linefeed
    }
   }
  }
@@ -68,8 +68,9 @@ The relative path of the file to inject results into. Injection requires that `o
 #### options.inject.text
 Type: `String`
 
-A template string using mustache-style delimiters to specify how results are injected into the file defined by `options.inject.dest`. Injection requires that `options.inject.dest` also be specified.
+A template string using mustache-style delimiters to specify how results are injected into the file specified by `options.inject.dest`. Injection requires that `options.inject.dest` also be specified.
 
+<!---
 ### Usage Examples
 
 #### Default Options
@@ -102,6 +103,7 @@ grunt.initConfig({
   },
 });
 ```
+-->
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
