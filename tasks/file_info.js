@@ -150,43 +150,43 @@ module.exports = function(grunt) {
     return require('zlib-browserify').gzipSync(grunt.file.read(filepath)).length;
   }
 
-  // return left-padded integer-right-aligned number string
+  // return left-padded integer-right-aligned size string
 
-  function sizeText(num, lpadding) {
-    var numStr;
+  function sizeText(bytes, lpadding) {
+    var sizeStr;
 
-    if (num > 999999) {
-      numStr = '' + Math.round(num / 100000) / 10;
+    if (bytes > 999999) {
+      sizeStr = '' + Math.round(bytes / 100000) / 10;
 
       if (lpadding) {
-        if (/\./.test(numStr)) {
+        if (/\./.test(sizeStr)) {
           lpadding += 2;
         }
-        lpadding -= numStr.length;
+        lpadding -= sizeStr.length;
         lpadding -= 4;
       }
-      numStr += ' MB';
-    } else if (num > 999) {
-      numStr = '' + Math.round(num / 100) / 10;
+      sizeStr += ' MB';
+    } else if (bytes > 999) {
+      sizeStr = '' + Math.round(bytes / 100) / 10;
 
       if (lpadding) {
-        if (/\./.test(numStr)) {
+        if (/\./.test(sizeStr)) {
           lpadding += 2;
         }
-        lpadding -= numStr.length;
+        lpadding -= sizeStr.length;
       }
-      numStr += ' kB';
+      sizeStr += ' kB';
     } else {
-      numStr = '' + num;
+      sizeStr = '' + bytes;
 
       if (lpadding) {
-        lpadding -= numStr.length;
+        lpadding -= sizeStr.length;
         lpadding += 4;
       }
-      numStr += ' bytes';
+      sizeStr += ' bytes';
     }
 
-    return (lpadding ? grunt.util.repeat(lpadding, ' ') : '') + numStr;
+    return (lpadding ? grunt.util.repeat(lpadding, ' ') : '') + sizeStr;
   }
 
   function spaceSavings(filepath) {
