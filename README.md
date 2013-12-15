@@ -26,7 +26,7 @@ Task targets, files and options may be specified according to the grunt [Configu
 ### Overview
 In your project's Gruntfile, add a section named `file_info` to the data object passed into `grunt.initConfig()`.
 
-For example:
+The following example injects file size information for 2 source files into a README.md file that already has a section whose formatting conforms to the `options.inject.text` template:
 
 ```js
 grunt.initConfig({
@@ -37,12 +37,12 @@ grunt.initConfig({
         inject: {
           dest: 'README.md',
           text: '###Size' + 
-          grunt.util.linefeed + grunt.util.linefeed + 
-          'Original: {{= sizeText(size(src[0])) }}' + 
-          grunt.util.linefeed + grunt.util.linefeed + 
-          'Minified: {{= sizeText(size(src[1])) }}' + 
-          grunt.util.linefeed + grunt.util.linefeed + 
-          'Gzipped : {{= sizeText(gzipSize(src[1])) }}'
+                grunt.util.linefeed + grunt.util.linefeed + 
+                'Original: {{= sizeText(size(src[0])) }}' + 
+                grunt.util.linefeed + grunt.util.linefeed + 
+                'Minified: {{= sizeText(size(src[1])) }}' + 
+                grunt.util.linefeed + grunt.util.linefeed + 
+                'Gzipped:  {{= sizeText(gzipSize(src[1])) }}'
         }
       }
     }
