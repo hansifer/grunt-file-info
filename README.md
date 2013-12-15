@@ -30,20 +30,23 @@ For example:
 
 ```js
 grunt.initConfig({
- file_info: {
-  source: {
-   src: ['source_file.js', 'minified_source_file.js'],
-   options: {
-    inject: {
-     dest: 'README.md',
-     text: '###Size' + grunt.util.linefeed + grunt.util.linefeed + 
-     'Original: {{= sizeText(size(src[0])) }}' + grunt.util.linefeed + grunt.util.linefeed + 
-     'Minified: {{= sizeText(size(src[1])) }}' + grunt.util.linefeed + grunt.util.linefeed + 
-     'Gzipped : {{= sizeText(gzipSize(src[1])) }}'
+  file_info: {
+    source: {
+      src: ['source_file.js', 'minified_source_file.js'],
+      options: {
+        inject: {
+          dest: 'README.md',
+          text: '###Size' + 
+          grunt.util.linefeed + grunt.util.linefeed + 
+          'Original: {{= sizeText(size(src[0])) }}' + 
+          grunt.util.linefeed + grunt.util.linefeed + 
+          'Minified: {{= sizeText(size(src[1])) }}' + 
+          grunt.util.linefeed + grunt.util.linefeed + 
+          'Gzipped : {{= sizeText(gzipSize(src[1])) }}'
+        }
+      }
     }
-   }
   }
- }
 });
 ```
 
