@@ -39,14 +39,14 @@ grunt.initConfig({
      text: '###Size' + grunt.util.linefeed + grunt.util.linefeed + 
      '|          | Version 1         | Version 2          |' + grunt.util.linefeed + 
      '| :------- | ----------------: | -----------------: |' + grunt.util.linefeed +
-     '| Original | {{= _.lpad(fileSizeText(fileSize(src[0])), 17) }} |                n/a |' + grunt.util.linefeed + 
-     '| Minified | {{= _.lpad(fileSizeText(fileSize(src[1])), 17) }} | {{= _.lpad(pass(), 18) }} |' + grunt.util.linefeed + 
-     '| Gzipped  | {{= _.lpad(fileSizeText(fileSize_gzip(src[1])), 17) }} | {{= _.lpad(pass(), 18) }} |'
+     '| Original | {{= _.lpad(sizeText(size(src[0])), 17) }} |                n/a |' + grunt.util.linefeed + 
+     '| Minified | {{= _.lpad(sizeText(size(src[1])), 17) }} | {{= _.lpad(pass(), 18) }} |' + grunt.util.linefeed + 
+     '| Gzipped  | {{= _.lpad(sizeText(gzipSize(src[1])), 17) }} | {{= _.lpad(pass(), 18) }} |'
     },
     stdout: grunt.util.linefeed + 
-    'Original: {{= fileSizeText(fileSize(src[0]), 7) }}' + grunt.util.linefeed + 
-    'Minified: {{= fileSizeText(fileSize(src[1]), 7) }}' + grunt.util.linefeed + 
-    'Gzipped:  {{= fileSizeText(fileSize_gzip("minified_source_file.js"), 7) }} ({{= Math.round((1 - fileSize_gzip("minified_source_file.js") / fileSize("minified_source_file.js")) * 10000) / 100 }}% savings)' + grunt.util.linefeed
+    'Original: {{= sizeText(size(src[0]), 7) }}' + grunt.util.linefeed + 
+    'Minified: {{= sizeText(size(src[1]), 7) }}' + grunt.util.linefeed + 
+    'Gzipped:  {{= sizeText(gzipSize("minified_source_file.js"), 7) }} ({{= Math.round((1 - gzipSize("minified_source_file.js") / size("minified_source_file.js")) * 10000) / 100 }}% savings)' + grunt.util.linefeed
    }
   }
  }

@@ -20,9 +20,9 @@ module.exports = function(grunt) {
     var i;
 
     // add template functions
-    this.data.fileSize = fileSize;
-    this.data.fileSize_gzip = fileSize_gzip;
-    this.data.fileSizeText = fileSizeText;
+    this.data.size = size;
+    this.data.gzipSize = gzipSize;
+    this.data.sizeText = sizeText;
     this.data.pass = function(i) {
       if (!arguments.length) {
         i = that.data.i;
@@ -133,7 +133,7 @@ module.exports = function(grunt) {
         });
 
         this.filesSrc.forEach(function(filepath) {
-          grunt.log.writeln('  ' + grunt.util._.rpad(filepath, colWidth + 1).grey + fileSizeText(fileSize(filepath), 8).grey + (' (' + fileSizeText(fileSize_gzip(filepath)) + ' gzipped)').grey);
+          grunt.log.writeln('  ' + grunt.util._.rpad(filepath, colWidth + 1).grey + sizeText(size(filepath), 8).grey + (' (' + sizeText(gzipSize(filepath)) + ' gzipped)').grey);
         });
       }
     }
@@ -141,17 +141,17 @@ module.exports = function(grunt) {
 
   var reTemplateField = new RegExp('\\{\\{.*?\\}\\}', 'g');
 
-  function fileSize(filepath) {
+  function size(filepath) {
     return grunt.file.read(filepath).length;
   }
 
-  function fileSize_gzip(filepath) {
+  function gzipSize(filepath) {
     return require('zlib-browserify').gzipSync(grunt.file.read(filepath)).length;
   }
 
   // return left-padded integer-right-aligned number string
 
-  function fileSizeText(num, lpadding) {
+  function sizeText(num, lpadding) {
     var numStr;
 
     if (num > 999999) {
