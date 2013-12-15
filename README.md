@@ -31,40 +31,16 @@ For example:
 ```js
 grunt.initConfig({
  file_info: {
-  source_verion_1: {
-   src: ['dist/v1/source_file.js', 'dist/v1/minified_source_file.js'],
+  source: {
+   src: ['source_file.js', 'minified_source_file.js'],
    options: {
     inject: {
      dest: 'README.md',
      text: '###Size' + grunt.util.linefeed + grunt.util.linefeed + 
-     '|          | Version 1         | Version 2         |' + grunt.util.linefeed + 
-     '| :------- | ----------------: | ----------------: |' + grunt.util.linefeed +
-     '| Original | {{= _.lpad(sizeText(size(src[0])), 17) }} |               n/a |' + grunt.util.linefeed + 
-     '| Minified | {{= _.lpad(sizeText(size(src[1])), 17) }} | {{= _.lpad(pass(), 17) }} |' + grunt.util.linefeed + 
-     '| Gzipped  | {{= _.lpad(sizeText(gzipSize(src[1])), 17) }} | {{= _.lpad(pass(), 17) }} |'
-    },
-    stdout: grunt.util.linefeed + 
-    'Original: {{= sizeText(size(src[0]), 7) }}' + grunt.util.linefeed + 
-    'Minified: {{= sizeText(size(src[1]), 7) }}' + grunt.util.linefeed + 
-    'Gzipped:  {{= sizeText(gzipSize(src[1]), 7) }} ({{= spaceSavings(src[1]) }}% savings)' + grunt.util.linefeed
-   }
-  },
-  source_verion_2: {
-   src: ['dist/v2/source_file.js', 'dist/v2/minified_source_file.js'],
-   options: {
-    inject: {
-     dest: 'README.md',
-     text: '###Size' + grunt.util.linefeed + grunt.util.linefeed + 
-     '|          | Version 1         | Version 2         |' + grunt.util.linefeed + 
-     '| :------- | ----------------: | ----------------: |' + grunt.util.linefeed +
-     '| Original | {{= _.lpad(pass(), 17) }} | {{= _.lpad(sizeText(size(src[0])), 17) }} |' + grunt.util.linefeed + 
-     '| Minified | {{= _.lpad(pass(), 17) }} | {{= _.lpad(sizeText(size(src[1])), 17) }} |' + grunt.util.linefeed + 
-     '| Gzipped  | {{= _.lpad(pass(), 17) }} | {{= _.lpad(sizeText(gzipSize(src[1])), 17) }} |'
-    },
-    stdout: grunt.util.linefeed + 
-    'Original: {{= sizeText(size(src[0]), 7) }}' + grunt.util.linefeed + 
-    'Minified: {{= sizeText(size(src[1]), 7) }}' + grunt.util.linefeed + 
-    'Gzipped:  {{= sizeText(gzipSize(src[1]), 7) }} ({{= spaceSavings(src[1]) }}% savings)' + grunt.util.linefeed
+     'Original: {{= sizeText(size(src[0])) }}' + grunt.util.linefeed + grunt.util.linefeed + 
+     'Minified: {{= sizeText(size(src[1])) }}' + grunt.util.linefeed + grunt.util.linefeed + 
+     'Gzipped : {{= sizeText(gzipSize(src[1])) }}'
+    }
    }
   }
  }
@@ -112,8 +88,59 @@ Returns optionally-padded text (eg, "2 kB") corresponding to a number of bytes.
 #### spaceSavings (`string` _filepath_)
 Returns the percentage space savings gained by gzipping the file specified by _filepath_.
 
+Additionally, the following function is available within fields of templates defined by `options.inject.text`:
+
 #### pass ([`number` _index_])
 Returns the literal value of a matched template field by its 1-based index. _index_ defaults to the index of the field in which `pass()` is called.
+
+### Usage Examples
+
+#### Default Options
+
+In this example, the default options are used to do something with whatever. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result would be `Testing, 1 2 3.`
+
+```js
+grunt.initConfig({
+ file_info: {
+  source_verion_1: {
+   src: ['dist/v1/source_file.js', 'dist/v1/minified_source_file.js'],
+   options: {
+    inject: {
+     dest: 'README.md',
+     text: '###Size' + grunt.util.linefeed + grunt.util.linefeed + 
+     '|          | Version 1         | Version 2         |' + grunt.util.linefeed + 
+     '| :------- | ----------------: | ----------------: |' + grunt.util.linefeed +
+     '| Original | {{= _.lpad(sizeText(size(src[0])), 17) }} | {{= _.lpad(pass(), 17) }} |' + grunt.util.linefeed + 
+     '| Minified | {{= _.lpad(sizeText(size(src[1])), 17) }} | {{= _.lpad(pass(), 17) }} |' + grunt.util.linefeed + 
+     '| Gzipped  | {{= _.lpad(sizeText(gzipSize(src[1])), 17) }} | {{= _.lpad(pass(), 17) }} |'
+    },
+    stdout: grunt.util.linefeed + 
+    'Original: {{= sizeText(size(src[0]), 7) }}' + grunt.util.linefeed + 
+    'Minified: {{= sizeText(size(src[1]), 7) }}' + grunt.util.linefeed + 
+    'Gzipped:  {{= sizeText(gzipSize(src[1]), 7) }} ({{= spaceSavings(src[1]) }}% savings)' + grunt.util.linefeed
+   }
+  },
+  source_verion_2: {
+   src: ['dist/v2/source_file.js', 'dist/v2/minified_source_file.js'],
+   options: {
+    inject: {
+     dest: 'README.md',
+     text: '###Size' + grunt.util.linefeed + grunt.util.linefeed + 
+     '|          | Version 1         | Version 2         |' + grunt.util.linefeed + 
+     '| :------- | ----------------: | ----------------: |' + grunt.util.linefeed +
+     '| Original | {{= _.lpad(pass(), 17) }} | {{= _.lpad(sizeText(size(src[0])), 17) }} |' + grunt.util.linefeed + 
+     '| Minified | {{= _.lpad(pass(), 17) }} | {{= _.lpad(sizeText(size(src[1])), 17) }} |' + grunt.util.linefeed + 
+     '| Gzipped  | {{= _.lpad(pass(), 17) }} | {{= _.lpad(sizeText(gzipSize(src[1])), 17) }} |'
+    },
+    stdout: grunt.util.linefeed + 
+    'Original: {{= sizeText(size(src[0]), 7) }}' + grunt.util.linefeed + 
+    'Minified: {{= sizeText(size(src[1]), 7) }}' + grunt.util.linefeed + 
+    'Gzipped:  {{= sizeText(gzipSize(src[1]), 7) }} ({{= spaceSavings(src[1]) }}% savings)' + grunt.util.linefeed
+   }
+  }
+ }
+});
+```
 
 <!---
 ### Usage Examples
