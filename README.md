@@ -89,8 +89,11 @@ Type: `string`
 A template string using mustache-style delimiters to define how results are injected into the file specified by `options.inject.dest`.
 
 The template defined by `options.inject.text` is used to:
+
 - identify the portion of text to replace in the destination file
+
 - extract current field values for comparison against calculated values
+
 - determine the text to inject into the destination file (if changes are detected)
 
 ### Template Functions
