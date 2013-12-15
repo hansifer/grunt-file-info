@@ -36,16 +36,22 @@ grunt.initConfig({
 			options: {
 				inject: {
 					dest: 'README.md',
-					text: '###Size' + grunt.util.linefeed + grunt.util.linefeed + '|          | Version 1         | Version 2          |' + grunt.util.linefeed + '| :------- | ----------------: | -----------------: |' + grunt.util.linefeed + '| Original | {{= _.lpad(fileSizeText(fileSize(src[0])), 17) }} |                n/a |' + grunt.util.linefeed + '| Minified | {{= _.lpad(fileSizeText(fileSize(src[1])), 17) }} | {{= _.lpad(pass(), 18) }} |' + grunt.util.linefeed + '| Gzipped  | {{= _.lpad(fileSizeText(fileSize_gzip(src[1])), 17) }} | {{= _.lpad(pass(), 18) }} |'
+					text: '###Size' + grunt.util.linefeed + grunt.util.linefeed + 
+					'|          | Version 1         | Version 2          |' + grunt.util.linefeed + 
+					'| :------- | ----------------: | -----------------: |' + grunt.util.linefeed +
+					'| Original | {{= _.lpad(fileSizeText(fileSize(src[0])), 17) }} |                n/a |' + grunt.util.linefeed + 
+					'| Minified | {{= _.lpad(fileSizeText(fileSize(src[1])), 17) }} | {{= _.lpad(pass(), 18) }} |' + grunt.util.linefeed + 
+					'| Gzipped  | {{= _.lpad(fileSizeText(fileSize_gzip(src[1])), 17) }} | {{= _.lpad(pass(), 18) }} |'
 				},
-				stdout: grunt.util.linefeed + 'Original: {{= fileSizeText(fileSize(src[0]), 7) }}' + grunt.util.linefeed + 'Minified: {{= fileSizeText(fileSize(src[1]), 7) }}' + grunt.util.linefeed + 'Gzipped:  {{= fileSizeText(fileSize_gzip("minified_source_file.js"), 7) }} ({{= Math.round((1 - fileSize_gzip("minified_source_file.js") / fileSize("minified_source_file.js")) * 10000) / 100 }}% savings)' + grunt.util.linefeed
+				stdout: grunt.util.linefeed + 
+				'Original: {{= fileSizeText(fileSize(src[0]), 7) }}' + grunt.util.linefeed + 
+				'Minified: {{= fileSizeText(fileSize(src[1]), 7) }}' + grunt.util.linefeed + 
+				'Gzipped:  {{= fileSizeText(fileSize_gzip("minified_source_file.js"), 7) }} ({{= Math.round((1 - fileSize_gzip("minified_source_file.js") / fileSize("minified_source_file.js")) * 10000) / 100 }}% savings)' + grunt.util.linefeed
 			}
 		}
 	}
 });
 ```
-
-Specify the relative paths to your original and minified files.   tany combination of original, minified, and gzipped files. `orig_size_str`, `mini_size_str`,  and `gzip_size_str` correspond to the calculated sizes of 
 
 ### Options
 
