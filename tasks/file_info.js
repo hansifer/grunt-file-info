@@ -23,6 +23,7 @@ module.exports = function(grunt) {
     this.data.size = size;
     this.data.gzipSize = gzipSize;
     this.data.sizeText = sizeText;
+    this.data.spaceSavings = spaceSavings;
     this.data.pass = function(i) {
       if (!arguments.length) {
         i = that.data.i;
@@ -186,6 +187,10 @@ module.exports = function(grunt) {
     }
 
     return (lpadding ? grunt.util.repeat(lpadding, ' ') : '') + numStr;
+  }
+
+  function spaceSavings(filepath) {
+    return Math.round((1 - gzipSize(filepath) / size(filepath)) * 10000) / 100;
   }
 
   // if comparing file size fields, return file size delta in bytes. eg, fieldDiff('2 kB', '2 bytes') -- > -1998
