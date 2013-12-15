@@ -13,177 +13,145 @@ module.exports = function(grunt) {
   // Please see the Grunt documentation for more information regarding task
   // creation: http://gruntjs.com/creating-tasks
 
-  // TODO: add support for optional 'find' option to allow specification of regexp of text to replace. In the absence of 'find' option, use 'text' to generate this regexp. In 'text' value, use '{{= grunt.template.pass(n) }}' to specify passthru values, where n is the index of a capturing group from the 'find' (regexp) value.
+  // TODO: add support for optional 'find' option to allow specification of regexp of text to replace. In the absence of 'find' option, use 'text' to generate this regexp. In 'text' value, use '{{= pass(n) }}' to specify passthru values, where n is the index of a capturing group from the 'find' (regexp) value.
   grunt.registerMultiTask('file_info', 'Display file info and optionally inject it into a file (eg, for self-documenting src file sizes).', function() {
     var fileContents;
     var that = this;
     var i;
-    var orig_size, mini_size, gzip_size;
 
-    if (this.data.original) {
-      fileContents = grunt.file.read(this.data.original);
-      this.data.orig_size_str = stringifySize(orig_size = fileContents.length);
-    }
-
-    if (this.data.gzipped) {
-      if (this.data.gzipped !== this.data.original) {
-        fileContents = grunt.file.read(this.data.gzipped);
+    // add template functions
+    this.data.fileSize = fileSize;
+    this.data.fileSize_gzip = fileSize_gzip;
+    this.data.fileSizeText = fileSizeText;
+    this.data.pass = function(i) {
+      if (!arguments.length) {
+        i = that.data.i;
       }
-      this.data.gzip_size_str = stringifySize(gzip_size = fileContents ? require('zlib-browserify').gzipSync(fileContents).length : 0);
-    }
 
-    if (this.data.minified) {
-      if ((this.data.gzipped && this.data.minified !== this.data.gzipped) || (!this.data.gzipped && (this.data.minified !== this.data.original))) {
-        fileContents = grunt.file.read(this.data.minified);
-      }
-      this.data.mini_size_str = stringifySize(mini_size = fileContents.length);
-    }
+      return (grunt.util._.isUndefined(i) ? '' : grunt.util._.trim(that.data.currentValues[i]));
+    };
 
-    var impacts = {}; // for values that either increased or decreased, add a property where name is fieldIndex and value is bytes delta (positive if up, negative if down)
-    if (this.options().update_file && this.options().update_file.file && this.options().update_file.text) {
-      fileContents = grunt.file.read(this.options().update_file.file);
+    grunt.template.addDelimiters('doubleBrace', '{{', '}}');
 
-      // var reText = '###Size[^]+?Original.*?\\|([^\\|]*).*?\\|([^\\|]*).*?$[^]+?Minified.*?\\|([^\\|]*).*?\\|([^\\|]*).*?$[^]+?Gzipped.*?\\|([^\\|]*).*?\\|([^\\|]*).*?$'
-      var re = new RegExp(this.options().update_file.find || this.options().update_file.text.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&').replace(/\\{\\{.*?\\}\\}/g, '(.*)'));
+    var fieldDiffs = {}; // for values that either increased or decreased, add a property where name is fieldIndex and value is bytes delta (positive if up, negative if down)
+    if (this.options().inject && this.options().inject.dest && this.options().inject.text) {
+      if (grunt.file.exists(this.options().inject.dest)) {
+        fileContents = grunt.file.read(this.options().inject.dest);
 
-      // console.log(re.source);
+        // var reText = '###Size[^]+?Original.*?\\|([^\\|]*).*?\\|([^\\|]*).*?$[^]+?Minified.*?\\|([^\\|]*).*?\\|([^\\|]*).*?$[^]+?Gzipped.*?\\|([^\\|]*).*?\\|([^\\|]*).*?$'
+        var re = new RegExp(this.options().find || this.options().inject.text.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&').replace(/\\{\\{.*?\\}\\}/g, '(.*)'));
 
-      if (this.data.currentValues = re.exec(fileContents)) { // first current field value is at index 1
-        // console.log('Matched portion of file: ', '*' + this.data.currentValues[0] + '*');
+        // console.log(re.source);
 
-        var origPass;
-        if ('pass' in grunt.template) {
-          origPass = grunt.template.pass;
-        }
+        if (this.data.currentValues = re.exec(fileContents)) { // first current field value is at index 1
+          // console.log('Matched portion of file: ', '*' + this.data.currentValues[0] + '*');
 
-        grunt.template.pass = function(i) {
-          if (!arguments.length) {
-            i = that.data.i;
+          var templateFields = this.options().inject.text.match(reTemplateField);
+          // console.log(templateFields);
+
+          // translate current values through grunt templating to gen new values
+
+          var newValues = [undefined]; // pad so that first new value is at index 1
+          for (i = 0; i < templateFields.length; i++) {
+            this.data.i = i + 1;
+            newValues.push(grunt.template.process(templateFields[i], {
+              data: this.data,
+              delimiters: 'doubleBrace'
+            }));
           }
 
-          return grunt.util._.trim(that.data.currentValues[i]);
-        };
-
-        var templateFields = this.options().update_file.text.match(reTemplateField);
-        // console.log(templateFields);
-
-        // translate current values through grunt templating to gen new values
-
-        grunt.template.addDelimiters('doubleBrace', '{{', '}}');
-
-        var newValues = [undefined]; // pad so that first new value is at index 1
-        for (i = 0; i < templateFields.length; i++) {
-          this.data.i = i + 1;
-          newValues.push(grunt.template.process(templateFields[i], {
-            data: this.data,
-            delimiters: 'doubleBrace'
-          }));
-        }
-
-        var delta;
-        for (; i > 0; i--) {
-          //  console.log(grunt.util._.lpad(grunt.util._.trim(this.data.currentValues[i]), 8), ' -->', grunt.util._.lpad(grunt.util._.trim(newValues[i]), 8));
-          if (delta = byteSizeDelta(this.data.currentValues[i], newValues[i])) {
-            impacts[i] = delta;
-          }
-        }
-
-        if (Object.keys(impacts).length) {
-          var reLF = new RegExp(grunt.util.linefeed + '|^', 'g');
-
-          // TODO: eliminate width harcode in rpad() calls below; base on max output line width instead
-
-          grunt.log.writeln();
-          grunt.log.writeln(grunt.util._.rpad('  Updating ' + this.target + ' sizes in ' + this.options().update_file.file + ' from: ', 54, '_').cyan);
-
-          grunt.log.writeln(this.data.currentValues[0].replace(reLF, grunt.util.linefeed + '  ')); // indent output
-
-          grunt.log.writeln();
-          grunt.log.writeln(grunt.util._.rpad('  to: ', 54, '_').cyan);
-
-          // output to file
-
-          i = 1;
-          var output = this.options().update_file.text.replace(reTemplateField, function() {
-            return newValues[i++];
-          });
-          grunt.file.write(this.options().update_file.file, fileContents.replace(re, output));
-
-          // output to command line; have to gen output string again for color-coded cli output
-
-          i = 1;
-          output = this.options().update_file.text.replace(reTemplateField, function() {
-            var ret = newValues[i];
-
-            if (impacts[i] > 0) {
-              ret = ret.red;
-            } else if (impacts[i] < 0) {
-              ret = ret.green;
+          var delta;
+          for (; i > 0; i--) {
+            //  console.log(grunt.util._.lpad(grunt.util._.trim(this.data.currentValues[i]), 8), ' -->', grunt.util._.lpad(grunt.util._.trim(newValues[i]), 8));
+            if (delta = fieldDiff(this.data.currentValues[i], newValues[i])) {
+              fieldDiffs[i] = delta;
             }
+          }
 
-            i++;
+          if (Object.keys(fieldDiffs).length) {
+            var reLF = new RegExp(grunt.util.linefeed + '|^', 'g');
 
-            return ret;
-          });
-          grunt.log.writeln(output.replace(reLF, grunt.util.linefeed + '  ')); // indent output
+            // TODO: eliminate width harcode in rpad() calls below; base on max output line width instead
+
+            grunt.log.writeln();
+            grunt.log.writeln(('  Updating ' + this.target + ' sizes in ' + this.options().inject.dest + ' from:').cyan);
+
+            grunt.log.writeln(this.data.currentValues[0].replace(reLF, grunt.util.linefeed + '  ')); // indent output
+
+            grunt.log.writeln();
+            grunt.log.writeln('  to:'.cyan);
+
+            // output to file
+
+            i = 1;
+            var output = this.options().inject.text.replace(reTemplateField, function() {
+              return newValues[i++];
+            });
+            grunt.file.write(this.options().inject.dest, fileContents.replace(re, output));
+
+            // output to command line; have to gen output string again for color-coded cli output
+
+            i = 1;
+            output = this.options().inject.text.replace(reTemplateField, function() {
+              var ret = newValues[i];
+
+              if (fieldDiffs[i] > 0) {
+                ret = ret.red;
+              } else if (fieldDiffs[i] < 0) {
+                ret = ret.green;
+              }
+
+              i++;
+
+              return ret;
+            });
+            grunt.log.writeln(output.replace(reLF, grunt.util.linefeed + '  ')); // indent output
+          }
         }
-
-        if (origPass) {
-          grunt.template.pass = origPass;
-        }
+      } else {
+        grunt.file.write(this.options().inject.dest, grunt.template.process(this.options().inject.text, {
+          data: this.data,
+          delimiters: 'doubleBrace'
+        }));
       }
     }
 
-    if (!Object.keys(impacts).length) {
-      grunt.log.writeln(grunt.util.linefeed +
-        (('  ' + this.target + ' version sizes:').cyan) + grunt.util.linefeed +
-        (this.data.original ? grunt.util.linefeed + '  Original: '.grey + stringifySize(orig_size, 8).grey : '') +
-        (this.data.minified ? grunt.util.linefeed + '  Minified: '.grey + stringifySize(mini_size, 8).grey : '') +
-        (this.data.gzipped ? grunt.util.linefeed + '  Gzipped:  '.grey + stringifySize(gzip_size, 8).grey : ''));
+    if (!Object.keys(fieldDiffs).length) {
+      var outTemplate = this.options().stdout || (this.options().inject && this.options().inject.text);
+
+      if (outTemplate) {
+        grunt.log.write(grunt.template.process(outTemplate, {
+          data: this.data,
+          delimiters: 'doubleBrace'
+        }));
+      } else {
+        grunt.log.writeln(grunt.util.linefeed + (('  ' + this.target + ' file sizes:').cyan) + grunt.util.linefeed);
+
+        var colWidth = 0;
+        this.filesSrc.forEach(function(filepath) {
+          colWidth = Math.max(filepath.length, colWidth);
+        });
+
+        this.filesSrc.forEach(function(filepath) {
+          grunt.log.writeln('  ' + grunt.util._.rpad(filepath, colWidth + 1).grey + fileSizeText(fileSize(filepath), 8).grey + (' (' + fileSizeText(fileSize_gzip(filepath)) + ' gzipped)').grey);
+        });
+      }
     }
   });
 
   var reTemplateField = new RegExp('\\{\\{.*?\\}\\}', 'g');
 
-  // returns the delta in bytes. eg, byteSizeDelta('2 kB', '2 bytes') -- > -1998
-
-  function byteSizeDelta(str1, str2) {
-    var float1, float2;
-
-    if (str1) {
-      float1 = parseByteSize(str1);
-
-      if (float1 || float1 === 0) {
-        if (str2) {
-          float2 = parseByteSize(str2);
-
-          if (float2 || float2 === 0) {
-            return float2 - float1;
-          }
-        }
-
-        return float1;
-      }
-    }
-
-    return 0;
+  function fileSize(filepath) {
+    return grunt.file.read(filepath).length;
   }
 
-  function parseByteSize(str) {
-    var ret = parseFloat(str) || 0;
-
-    if (/kB/i.test(str)) {
-      ret = ret * 1000;
-    } else if (/MB/i.test(str)) {
-      ret = ret * 1000 * 1000;
-    }
-
-    return ret;
+  function fileSize_gzip(filepath) {
+    return require('zlib-browserify').gzipSync(grunt.file.read(filepath)).length;
   }
 
   // return left-padded integer-right-aligned number string
 
-  function stringifySize(num, lpadding) {
+  function fileSizeText(num, lpadding) {
     var numStr;
 
     if (num > 999999) {
@@ -218,5 +186,50 @@ module.exports = function(grunt) {
     }
 
     return (lpadding ? grunt.util.repeat(lpadding, ' ') : '') + numStr;
+  }
+
+  // if comparing file size fields, return file size delta in bytes. eg, fieldDiff('2 kB', '2 bytes') -- > -1998
+  // else, return 1 if strings differ, 0 if same
+
+  function fieldDiff(str1, str2) {
+    var float1, float2;
+
+    if (!grunt.util._.isUndefined(str1) && str1 !== str2) {
+      if (isFileSize(str1) && isFileSize(str2)) {
+        float1 = parseByteSize(str1);
+
+        if (float1 || float1 === 0) {
+          if (str2) {
+            float2 = parseByteSize(str2);
+
+            if (float2 || float2 === 0) {
+              return float2 - float1;
+            }
+          }
+
+          return float1;
+        }
+      }
+
+      return 1;
+    }
+
+    return 0;
+  }
+
+  function isFileSize(str) {
+    return (/[\d\s](bytes|kB|MB)$/i.test(str));
+  }
+
+  function parseByteSize(str) {
+    var ret = parseFloat(str) || 0;
+
+    if (/kB/i.test(str)) {
+      ret = ret * 1000;
+    } else if (/MB/i.test(str)) {
+      ret = ret * 1000 * 1000;
+    }
+
+    return ret;
   }
 };
