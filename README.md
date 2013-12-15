@@ -68,31 +68,31 @@ The relative path of the file to inject results into. Injection requires that `o
 #### options.inject.text
 Type: `string`
 
-A template string using mustache-style delimiters to specify how results are injected into the file specified by `options.inject.dest` (injection requires that `options.inject.dest` also be specified).
+A template string using mustache-style delimiters to define how results are injected into the file specified by `options.inject.dest`.
 
 The template defined by `options.inject.text` is used to:
 - identify the portion of text to replace in the destination file
 - extract current field values for comparison against calculated values
-- determine the text to inject into the destination file
+- determine the text to inject into the destination file (if changes are detected)
 
 ### Template Functions
 
-The following functions are available to templates specified by `options.inject.stdout` and `options.inject.text`:
+The following functions are available to templates defined by `options.inject.stdout` and `options.inject.text`:
 
-#### size(`string` _filepath_)
+#### size (`string` _filepath_)
 Returns the size in bytes of the file specified by _filepath_.
 
-#### gzipSize(`string` _filepath_)
+#### gzipSize (`string` _filepath_)
 Returns the gzipped size in bytes of the file specified by _filepath_.
 
-#### sizeText(`number` _bytes_ [, `number` _lpadding_])
+#### sizeText (`number` _bytes_ [, `number` _lpadding_])
 Returns optionally-padded text (eg, "2 kB") corresponding to a number of bytes.
 
-#### spaceSavings(`string` _filepath_)
+#### spaceSavings (`string` _filepath_)
 Returns the percentage space savings gained by gzipping the file specified by _filepath_.
 
-#### pass([`number` _index_])
-Returns the literal value of a matched template field by its 0-based index. _index_ defaults to the index of the field in which `pass()` is called.
+#### pass ([`number` _index_])
+Returns the literal value of a matched template field by its 1-based index. _index_ defaults to the index of the field in which `pass()` is called.
 
 <!---
 ### Usage Examples
