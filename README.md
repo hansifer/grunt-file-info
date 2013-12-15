@@ -100,6 +100,28 @@ Returns the literal value of a matched template field by its 1-based index. _ind
 
 #### Default Options
 
+The following example simply outputs file size information for 2 source files to the command line:
+
+```js
+grunt.initConfig({
+  file_info: {
+    Source: {
+      src: ['source_file.js', 'minified_source_file.js']
+    }
+  }
+});
+```
+
+Output:
+```
+  Source file sizes:
+
+  source_file.js                22.5 kB (4.2 kB gzipped)
+  minified_source_file.js       17.9 kB (3.9 kB gzipped)
+```
+
+#### Default Options
+
 In this example, the default options are used to do something with whatever. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result would be `Testing, 1 2 3.`
 
 ```js
