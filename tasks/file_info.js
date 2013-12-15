@@ -41,97 +41,96 @@ module.exports = function(grunt) {
 
     var impacts = {}; // for values that either increased or decreased, add a property where name is fieldIndex and value is bytes delta (positive if up, negative if down)
     if (this.options().update_file && this.options().update_file.file && this.options().update_file.text) {
-      var origPass;
-      if ('pass' in grunt.template) {
-        origPass = grunt.template.pass;
-      }
-
-      grunt.template.pass = function(i) {
-        if (!arguments.length) {
-          i = that.data.i;
-        }
-
-        return grunt.util._.trim(that.data.currentValues[i]);
-      };
-
       fileContents = grunt.file.read(this.options().update_file.file);
-
-      var templateFields = this.options().update_file.text.match(reTemplateField);
-
-      // console.log(templateFields);
 
       // var reText = '###Size[^]+?Original.*?\\|([^\\|]*).*?\\|([^\\|]*).*?$[^]+?Minified.*?\\|([^\\|]*).*?\\|([^\\|]*).*?$[^]+?Gzipped.*?\\|([^\\|]*).*?\\|([^\\|]*).*?$'
       var re = new RegExp(this.options().update_file.find || this.options().update_file.text.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&').replace(/\\{\\{.*?\\}\\}/g, '(.*)'));
 
       // console.log(re.source);
 
-      this.data.currentValues = re.exec(fileContents); // first current field value is at index 1
+      if (this.data.currentValues = re.exec(fileContents)) { // first current field value is at index 1
+        // console.log('Matched portion of file: ', '*' + this.data.currentValues[0] + '*');
 
-      // console.log('Matched portion of file: ', '*' + this.data.currentValues[0] + '*');
-
-      // translate current values through grunt templating to gen new values
-
-      grunt.template.addDelimiters('doubleBrace', '{{', '}}');
-
-      var newValues = [undefined]; // pad so that first new value is at index 1
-      for (i = 0; i < templateFields.length; i++) {
-        this.data.i = i + 1;
-        newValues.push(grunt.template.process(templateFields[i], {
-          data: this.data,
-          delimiters: 'doubleBrace'
-        }));
-      }
-
-      var delta;
-      for (; i > 0; i--) {
-        //  console.log(grunt.util._.lpad(grunt.util._.trim(this.data.currentValues[i]), 8), ' -->', grunt.util._.lpad(grunt.util._.trim(newValues[i]), 8));
-        if (delta = byteSizeDelta(this.data.currentValues[i], newValues[i])) {
-          impacts[i] = delta;
+        var origPass;
+        if ('pass' in grunt.template) {
+          origPass = grunt.template.pass;
         }
-      }
 
-      if (Object.keys(impacts).length) {
-        var reLF = new RegExp(grunt.util.linefeed + '|^', 'g');
-
-        // TODO: eliminate width harcode in rpad() calls below; base on max output line width instead
-
-        grunt.log.writeln();
-        grunt.log.writeln(grunt.util._.rpad('  Updating ' + this.target + ' sizes in ' + this.options().update_file.file + ' from: ', 54, '_').cyan);
-
-        grunt.log.writeln(this.data.currentValues[0].replace(reLF, grunt.util.linefeed + '  ')); // indent output
-
-        grunt.log.writeln();
-        grunt.log.writeln(grunt.util._.rpad('  to: ', 54, '_').cyan);
-
-        // output to file
-
-        i = 1;
-        var output = this.options().update_file.text.replace(reTemplateField, function() {
-          return newValues[i++];
-        });
-        grunt.file.write(this.options().update_file.file, fileContents.replace(re, output));
-
-        // output to command line; have to gen output string again for color-coded cli output
-
-        i = 1;
-        output = this.options().update_file.text.replace(reTemplateField, function() {
-          var ret = newValues[i];
-
-          if (impacts[i] > 0) {
-            ret = ret.red;
-          } else if (impacts[i] < 0) {
-            ret = ret.green;
+        grunt.template.pass = function(i) {
+          if (!arguments.length) {
+            i = that.data.i;
           }
 
-          i++;
+          return grunt.util._.trim(that.data.currentValues[i]);
+        };
 
-          return ret;
-        });
-        grunt.log.writeln(output.replace(reLF, grunt.util.linefeed + '  ')); // indent output
-      }
+        var templateFields = this.options().update_file.text.match(reTemplateField);
+        // console.log(templateFields);
 
-      if (origPass) {
-        grunt.template.pass = origPass;
+        // translate current values through grunt templating to gen new values
+
+        grunt.template.addDelimiters('doubleBrace', '{{', '}}');
+
+        var newValues = [undefined]; // pad so that first new value is at index 1
+        for (i = 0; i < templateFields.length; i++) {
+          this.data.i = i + 1;
+          newValues.push(grunt.template.process(templateFields[i], {
+            data: this.data,
+            delimiters: 'doubleBrace'
+          }));
+        }
+
+        var delta;
+        for (; i > 0; i--) {
+          //  console.log(grunt.util._.lpad(grunt.util._.trim(this.data.currentValues[i]), 8), ' -->', grunt.util._.lpad(grunt.util._.trim(newValues[i]), 8));
+          if (delta = byteSizeDelta(this.data.currentValues[i], newValues[i])) {
+            impacts[i] = delta;
+          }
+        }
+
+        if (Object.keys(impacts).length) {
+          var reLF = new RegExp(grunt.util.linefeed + '|^', 'g');
+
+          // TODO: eliminate width harcode in rpad() calls below; base on max output line width instead
+
+          grunt.log.writeln();
+          grunt.log.writeln(grunt.util._.rpad('  Updating ' + this.target + ' sizes in ' + this.options().update_file.file + ' from: ', 54, '_').cyan);
+
+          grunt.log.writeln(this.data.currentValues[0].replace(reLF, grunt.util.linefeed + '  ')); // indent output
+
+          grunt.log.writeln();
+          grunt.log.writeln(grunt.util._.rpad('  to: ', 54, '_').cyan);
+
+          // output to file
+
+          i = 1;
+          var output = this.options().update_file.text.replace(reTemplateField, function() {
+            return newValues[i++];
+          });
+          grunt.file.write(this.options().update_file.file, fileContents.replace(re, output));
+
+          // output to command line; have to gen output string again for color-coded cli output
+
+          i = 1;
+          output = this.options().update_file.text.replace(reTemplateField, function() {
+            var ret = newValues[i];
+
+            if (impacts[i] > 0) {
+              ret = ret.red;
+            } else if (impacts[i] < 0) {
+              ret = ret.green;
+            }
+
+            i++;
+
+            return ret;
+          });
+          grunt.log.writeln(output.replace(reLF, grunt.util.linefeed + '  ')); // indent output
+        }
+
+        if (origPass) {
+          grunt.template.pass = origPass;
+        }
       }
     }
 
