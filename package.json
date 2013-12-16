@@ -1,7 +1,7 @@
 {
   "name": "grunt-file-info",
   "description": "Display file info and optionally inject it into a file (eg, for self-documenting src file sizes).",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "homepage": "https://github.com/hansifer/grunt-file-info",
   "author": {
     "name": "Hans Meyer",
