@@ -133,13 +133,10 @@ grunt.initConfig({
     Source: {
       src: ['source_file.js', 'minified_source_file.js'],
       options: {
-        stdout: grunt.util.linefeed + 
-        'Original: {{= sizeText(size(src[0]), 7) }}' + 
-        grunt.util.linefeed + 
-        'Minified: {{= sizeText(size(src[1]), 7) }}' + 
-        grunt.util.linefeed + 
-        'Gzipped:  {{= sizeText(gzipSize(src[1]), 7) }} ({{= spaceSavings(src[1]) }}% savings)' + 
-        grunt.util.linefeed
+        stdout: 
+          'Original: {{= sizeText(size(src[0]), 7) }}' + grunt.util.linefeed + 
+          'Minified: {{= sizeText(size(src[1]), 7) }}' + grunt.util.linefeed + 
+          'Gzipped:  {{= sizeText(gzipSize(src[1]), 7) }} ({{= spaceSavings(src[1]) }}% savings)'
       }
     }
   }
@@ -162,10 +159,8 @@ grunt.initConfig({
             src: 'source_file.js',
             options: {
                 stdout: 
-                  'Name: {{= src }}' + 
-                  grunt.util.linefeed + 
-                  'Date: {{= modified(src).toDateString() }}' + 
-                  grunt.util.linefeed + 
+                  'Name: {{= src }}' + grunt.util.linefeed + 
+                  'Date: {{= modified(src).toDateString() }}' + grunt.util.linefeed + 
                   'Size: {{= sizeText(size(src)) }}'
             }
         }
@@ -193,16 +188,15 @@ grunt.initConfig({
         inject: {
           dest: 'README.md',
           text: 
-          '###Size' + grunt.util.linefeed + grunt.util.linefeed + 
-          '|          | Version 1 | Version 2 |' + 
-          grunt.util.linefeed + 
-          '| :------- | --------: | --------: |' + 
-          grunt.util.linefeed +
-          '| Original | {{= _.lpad(sizeText(size(src[0])), 9) }} | {{= _.lpad(pass(), 9) }} |' + 
-          grunt.util.linefeed + 
-          '| Minified | {{= _.lpad(sizeText(size(src[1])), 9) }} | {{= _.lpad(pass(), 9) }} |' + 
-          grunt.util.linefeed + 
-          '| Gzipped  | {{= _.lpad(sizeText(gzipSize(src[1])), 9) }} | {{= _.lpad(pass(), 9) }} |'
+            '###Size' + 
+            grunt.util.linefeed + grunt.util.linefeed + 
+            '|          | Version 1 | Version 2 |' + grunt.util.linefeed + 
+            '| :------- | --------: | --------: |' + grunt.util.linefeed +
+            '| Original | {{= _.lpad(sizeText(size(src[0])), 9) }} | {{= _.lpad(pass(), 9) }} |' + 
+            grunt.util.linefeed + 
+            '| Minified | {{= _.lpad(sizeText(size(src[1])), 9) }} | {{= _.lpad(pass(), 9) }} |' + 
+            grunt.util.linefeed + 
+            '| Gzipped  | {{= _.lpad(sizeText(gzipSize(src[1])), 9) }} | {{= _.lpad(pass(), 9) }} |'
         }
       }
     }
@@ -235,17 +229,20 @@ grunt.initConfig({
     inject: {
      dest: 'README.md',
      text: 
-     '###Size' + grunt.util.linefeed + grunt.util.linefeed + 
-     '|          | Version 1 | Version 2 |' + grunt.util.linefeed + 
-     '| :------- | --------: | --------: |' + grunt.util.linefeed +
-     '| Original | {{= _.lpad(sizeText(size(src[0])), 9) }} | {{= _.lpad(pass(), 9) }} |' + grunt.util.linefeed + 
-     '| Minified | {{= _.lpad(sizeText(size(src[1])), 9) }} | {{= _.lpad(pass(), 9) }} |' + grunt.util.linefeed + 
-     '| Gzipped  | {{= _.lpad(sizeText(gzipSize(src[1])), 9) }} | {{= _.lpad(pass(), 9) }} |'
+       '###Size' + grunt.util.linefeed + grunt.util.linefeed + 
+       '|          | Version 1 | Version 2 |' + grunt.util.linefeed + 
+       '| :------- | --------: | --------: |' + grunt.util.linefeed +
+       '| Original | {{= _.lpad(sizeText(size(src[0])), 9) }} | {{= _.lpad(pass(), 9) }} |' + 
+       grunt.util.linefeed + 
+       '| Minified | {{= _.lpad(sizeText(size(src[1])), 9) }} | {{= _.lpad(pass(), 9) }} |' + 
+       grunt.util.linefeed + 
+       '| Gzipped  | {{= _.lpad(sizeText(gzipSize(src[1])), 9) }} | {{= _.lpad(pass(), 9) }} |'
     },
     stdout: grunt.util.linefeed + 
     'Original: {{= sizeText(size(src[0]), 7) }}' + grunt.util.linefeed + 
     'Minified: {{= sizeText(size(src[1]), 7) }}' + grunt.util.linefeed + 
-    'Gzipped:  {{= sizeText(gzipSize(src[1]), 7) }} ({{= spaceSavings(src[1]) }}% savings)' + grunt.util.linefeed
+    'Gzipped:  {{= sizeText(gzipSize(src[1]), 7) }} ({{= spaceSavings(src[1]) }}% savings)' + 
+    grunt.util.linefeed
    }
   },
   source_verion_2: {
@@ -254,17 +251,20 @@ grunt.initConfig({
     inject: {
      dest: 'README.md',
      text: 
-     '###Size' + grunt.util.linefeed + grunt.util.linefeed + 
-     '|          | Version 1 | Version 2 |' + grunt.util.linefeed + 
-     '| :------- | --------: | --------: |' + grunt.util.linefeed +
-     '| Original | {{= _.lpad(pass(), 9) }} | {{= _.lpad(sizeText(size(src[0])), 9) }} |' + grunt.util.linefeed + 
-     '| Minified | {{= _.lpad(pass(), 9) }} | {{= _.lpad(sizeText(size(src[1])), 9) }} |' + grunt.util.linefeed + 
-     '| Gzipped  | {{= _.lpad(pass(), 9) }} | {{= _.lpad(sizeText(gzipSize(src[1])), 9) }} |'
+       '###Size' + grunt.util.linefeed + grunt.util.linefeed + 
+       '|          | Version 1 | Version 2 |' + grunt.util.linefeed + 
+       '| :------- | --------: | --------: |' + grunt.util.linefeed +
+       '| Original | {{= _.lpad(pass(), 9) }} | {{= _.lpad(sizeText(size(src[0])), 9) }} |' + 
+       grunt.util.linefeed + 
+       '| Minified | {{= _.lpad(pass(), 9) }} | {{= _.lpad(sizeText(size(src[1])), 9) }} |' + 
+       grunt.util.linefeed + 
+       '| Gzipped  | {{= _.lpad(pass(), 9) }} | {{= _.lpad(sizeText(gzipSize(src[1])), 9) }} |'
     },
     stdout: grunt.util.linefeed + 
     'Original: {{= sizeText(size(src[0]), 7) }}' + grunt.util.linefeed + 
     'Minified: {{= sizeText(size(src[1]), 7) }}' + grunt.util.linefeed + 
-    'Gzipped:  {{= sizeText(gzipSize(src[1]), 7) }} ({{= spaceSavings(src[1]) }}% savings)' + grunt.util.linefeed
+    'Gzipped:  {{= sizeText(gzipSize(src[1]), 7) }} ({{= spaceSavings(src[1]) }}% savings)' + 
+    grunt.util.linefeed
    }
   }
  }
