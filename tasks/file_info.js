@@ -18,12 +18,14 @@ module.exports = function(grunt) {
     var fileContents;
     var that = this;
     var i;
+    var output;
 
     // add template functions
     this.data.size = size;
     this.data.gzipSize = gzipSize;
     this.data.sizeText = sizeText;
     this.data.spaceSavings = spaceSavings;
+    this.data.modified = modified;
     this.data.pass = function(i) {
       if (!arguments.length) {
         i = that.data.i;
@@ -85,7 +87,7 @@ module.exports = function(grunt) {
             // output to file
 
             i = 1;
-            var output = this.options().inject.text.replace(reTemplateField, function() {
+            output = this.options().inject.text.replace(reTemplateField, function() {
               return newValues[i++];
             });
             grunt.file.write(this.options().inject.dest, fileContents.replace(re, output));
@@ -118,13 +120,23 @@ module.exports = function(grunt) {
     }
 
     if (!Object.keys(fieldDiffs).length) {
-      var outTemplate = this.options().stdout || (this.options().inject && this.options().inject.text);
-
-      if (outTemplate) {
-        grunt.log.write(grunt.template.process(outTemplate, {
+      if (this.options().stdout) {
+        grunt.log.write(grunt.template.process(this.options().stdout, {
           data: this.data,
           delimiters: 'doubleBrace'
         }));
+      } else if (this.options().inject && this.options().inject.text) {
+        if (newValues) {
+          i = 1;
+          grunt.log.write(this.options().inject.text.replace(reTemplateField, function() {
+            return newValues[i++];
+          }));
+        } else {
+          grunt.log.write(grunt.template.process(this.options().inject.text, {
+            data: this.data,
+            delimiters: 'doubleBrace'
+          }));
+        }
       } else {
         grunt.log.writeln(grunt.util.linefeed + (('  ' + this.target + ' file sizes:').cyan) + grunt.util.linefeed);
 
@@ -143,7 +155,8 @@ module.exports = function(grunt) {
   var reTemplateField = new RegExp('\\{\\{.*?\\}\\}', 'g');
 
   function size(filepath) {
-    return grunt.file.read(filepath).length;
+    return require('fs').lstatSync(filepath).size;
+    // return grunt.file.read(filepath).length;
   }
 
   function gzipSize(filepath) {
@@ -191,6 +204,10 @@ module.exports = function(grunt) {
 
   function spaceSavings(filepath) {
     return Math.round((1 - gzipSize(filepath) / size(filepath)) * 10000) / 100;
+  }
+
+  function modified(filepath) {
+    return require('fs').lstatSync(filepath).mtime;
   }
 
   // if comparing file size fields, return file size delta in bytes. eg, fieldDiff('2 kB', '2 bytes') -- > -1998
