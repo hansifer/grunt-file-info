@@ -1,6 +1,6 @@
 # grunt-file-info
 
-Display file info (name, modification date, size) of one or more files and optionally inject it into a file. Ideal for automatically updating a README.md file with src file size stats as they change.
+Display file info (name, modification date, size) of one or more files and optionally inject it into a file. Ideal for automatically updating README.md with src file size stats as they change.
 
 ## Getting Started
 This plugin requires Grunt `~0.4.1`
@@ -58,17 +58,17 @@ Default: `true`
 
 If falsy, output to the command line is suppressed. 
 
-If `true`, results are output to the command line using a standard layout of filename, size, and gzipped size of each file specified by `src`.
+If `true`, results for each file specified by `src` are output to the command line using the default template.
 
-If a string is passed, it is used as a mustache-style-delimited template specifying how results are output to the command line.
+If a string is passed, it is applied as a mustache-style-delimited template specifying how results are output to the command line.
 
 #### options.inject
-Type: `object` or `array of object`
+Type: `object` or `array of object`  
 Default: null
 
 One or more "inject" config objects having the following properties:
-||||
-|--|--|:--|
+| | | | 
+|:--|:--|:--|
 |'dest'| required | An injection target filepath string or array of injection target filepath strings.|
 |'text'| optional | A template string using mustache-style delimiters to define how results are injected into the file(s) specified by `dest`.|
 |'report'| optional | If truthy or not defined, inject status is output to the command line. Otherwise, no status is output. Default: `true`|
@@ -82,7 +82,7 @@ The template defined by `text` is used to:
 - determine the text to inject into the destination file(s) (if changes are detected)
 
 #### options.injectReport
-Type: `boolean`
+Type: `boolean` 
 Default: true
 
 Provides a default for the 'report' property of 'inject' config objects.
