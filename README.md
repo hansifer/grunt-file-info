@@ -1,6 +1,6 @@
 # grunt-file-info
 
-Display file info and optionally inject it into a file (eg, for self-documenting src file sizes).
+Display file info (name, modification date, size) of one or more files and optionally inject it into a file. Ideal for automatically updating a README.md file with src file size stats as they change.
 
 ## Getting Started
 This plugin requires Grunt `~0.4.1`
@@ -26,7 +26,7 @@ Task targets, files and options may be specified according to the grunt [Configu
 ### Overview
 In your project's Gruntfile, add a section named `file_info` to the data object passed into `grunt.initConfig()`.
 
-The following example injects file size information for a source file and its minified version into a README.md file that already has a section whose formatting conforms to the `options.inject.text` template:
+The following example injects file size information for a source file and its minified version into a README.md file that already has a section whose layout conforms to the `options.inject.text` template:
 
 ```js
 grunt.initConfig({
@@ -53,27 +53,39 @@ grunt.initConfig({
 ### Options
 
 #### options.stdout
-Type: `string`
+Type: `boolean` or `string`
+Default: `true`
 
-A template string using mustache-style delimiters to specify how results are output to the command line. If not specified, it falls back to the template defined by `options.inject.text` or the default layout of filename, size, and gzipped size of each file in `src`.
+If falsy, output to the command line is suppressed. 
 
-#### options.inject.dest
-Type: `string`
+If `true`, results are output to the command line using a standard layout of filename, size, and gzipped size of each file specified by `src`.
 
-The relative path of the file to inject results into. Injection requires that `options.inject.text` also be specified.
+If a string is passed, it is used as a mustache-style-delimited template specifying how results are output to the command line.
 
-#### options.inject.text
-Type: `string`
+#### options.inject
+Type: `object` or `array of object`
+Default: null
 
-A template string using mustache-style delimiters to define how results are injected into the file specified by `options.inject.dest`.
+One or more "inject" config objects having the following properties:
+||||
+|--|--|:--|
+|'dest'| required | An injection target filepath string or array of injection target filepath strings.|
+|'text'| optional | A template string using mustache-style delimiters to define how results are injected into the file(s) specified by `dest`.|
+|'report'| optional | If truthy or not defined, inject status is output to the command line. Otherwise, no status is output. Default: `true`|
 
-The template defined by `options.inject.text` is used to:
+The template defined by `text` is used to:
 
-- identify the portion of text to replace in the destination file
+- identify the portion of text to replace in the injection target file
 
-- extract current field values for comparison against calculated values
+- extract current field values from the injection target file for comparison against calculated values
 
-- determine the text to inject into the destination file (if changes are detected)
+- determine the text to inject into the destination file(s) (if changes are detected)
+
+#### options.injectReport
+Type: `boolean`
+Default: true
+
+Provides a default for the 'report' property of 'inject' config objects.
 
 ### Template Functions
 
@@ -93,6 +105,9 @@ Returns the percentage space savings gained by gzipping the file specified by _f
 
 #### modified (`string` _filepath_)
 Returns the date that the contents of the file specified by _filepath_ were last modified.
+
+#### modifiedAgo (`string` _filepath_)
+Returns a string (eg, "10 days ago") describing how long ago the contents of the file specified by _filepath_ were last modified.
 
 Additionally, the following function is available within fields of templates defined by `options.inject.text`:
 
@@ -177,7 +192,11 @@ Size: 22.5 kB
 
 #### File Injection
 
-The following example injects file size information for a source file and its minified version into a README.md file according to a supplied template. The template is used to match the portion of the file to replace as well as to generate the replacement text. File injection occurs only if a portion of the destination file matches `options.inject.text` and one or more corresponding field values _change_, in which case a diff is output to the command line for the matching portion of text. If no portion of the file matches `options.inject.text` or no change is detected, file information is output to the command line according to the template defined in `options.stdout`, `options.inject.text`, or the default layout. If the destination file does not exist, it is created with the generated text.
+The following example injects file size information for a source file and its minified version into a README.md file according to a template specified by `options.inject.text`. The template is used to match the portion of the file to replace as well as to generate the replacement text. 
+
+File injection occurs only if a portion of the destination file matches `options.inject.text` and one or more corresponding field values _change_, in which case a diff is output to the command line for the matching portion of text. If no portion of the destination file matches `options.inject.text` or no change is detected, file information is output to the command line according to the template defined in `options.stdout`, `options.inject.text`, or the default layout. 
+
+If the destination file does not exist, it is created and populated with the generated text.
 
 ```js
 grunt.initConfig({
@@ -204,7 +223,7 @@ grunt.initConfig({
 });
 ```
 
-Injected text <nowiki>*</nowiki>:
+Injected text:&nbsp;&nbsp;<nowiki>*</nowiki>
 ```
 ###Size
 
@@ -214,11 +233,11 @@ Injected text <nowiki>*</nowiki>:
 | Minified |   17.9 kB |   19.7 kB |
 | Gzipped  |    3.9 kB |    4.1 kB |
 ```
-<nowiki>*</nowiki> _given that any of the size values for "Version 1" have changed. Note that "Version 2" values in this case are simply propagated from the existing text in the file._
+<nowiki>*</nowiki> _Text is written to the destination file in this case only if any of the size values for "Version 1" have changed. Note that "Version 2" values in this case are simply propagated from the existing text in the file._
 
 #### Kitchen Sink
 
-The following comprehensive example shows the use of multiple `file_info` targets that write source file information to the same portion of a README.md file.
+The following comprehensive example shows the use of multiple `file_info` targets that write file information about a number of source files to the same portion of a README.md file.
 
 ```js
 grunt.initConfig({
@@ -229,20 +248,19 @@ grunt.initConfig({
     inject: {
      dest: 'README.md',
      text: 
-       '###Size' + grunt.util.linefeed + grunt.util.linefeed + 
-       '|          | Version 1 | Version 2 |' + grunt.util.linefeed + 
-       '| :------- | --------: | --------: |' + grunt.util.linefeed +
-       '| Original | {{= _.lpad(sizeText(size(src[0])), 9) }} | {{= _.lpad(pass(), 9) }} |' + 
-       grunt.util.linefeed + 
-       '| Minified | {{= _.lpad(sizeText(size(src[1])), 9) }} | {{= _.lpad(pass(), 9) }} |' + 
-       grunt.util.linefeed + 
-       '| Gzipped  | {{= _.lpad(sizeText(gzipSize(src[1])), 9) }} | {{= _.lpad(pass(), 9) }} |'
+      '###Size' + grunt.util.linefeed + grunt.util.linefeed + 
+      '|          | Version 1 | Version 2 |' + grunt.util.linefeed + 
+      '| :------- | --------: | --------: |' + grunt.util.linefeed +
+      '| Original | {{= _.lpad(sizeText(size(src[0])), 9) }} | {{= _.lpad(pass(), 9) }} |' + 
+      grunt.util.linefeed + 
+      '| Minified | {{= _.lpad(sizeText(size(src[1])), 9) }} | {{= _.lpad(pass(), 9) }} |' + 
+      grunt.util.linefeed + 
+      '| Gzipped  | {{= _.lpad(sizeText(gzipSize(src[1])), 9) }} | {{= _.lpad(pass(), 9) }} |'
     },
-    stdout: grunt.util.linefeed + 
-    'Original: {{= sizeText(size(src[0]), 7) }}' + grunt.util.linefeed + 
-    'Minified: {{= sizeText(size(src[1]), 7) }}' + grunt.util.linefeed + 
-    'Gzipped:  {{= sizeText(gzipSize(src[1]), 7) }} ({{= spaceSavings(src[1]) }}% savings)' + 
-    grunt.util.linefeed
+    stdout: 
+     'Original: {{= sizeText(size(src[0]), 7) }}' + grunt.util.linefeed + 
+     'Minified: {{= sizeText(size(src[1]), 7) }}' + grunt.util.linefeed + 
+     'Gzipped:  {{= sizeText(gzipSize(src[1]), 7) }} ({{= spaceSavings(src[1]) }}% savings)'
    }
   },
   source_verion_2: {
@@ -251,20 +269,19 @@ grunt.initConfig({
     inject: {
      dest: 'README.md',
      text: 
-       '###Size' + grunt.util.linefeed + grunt.util.linefeed + 
-       '|          | Version 1 | Version 2 |' + grunt.util.linefeed + 
-       '| :------- | --------: | --------: |' + grunt.util.linefeed +
-       '| Original | {{= _.lpad(pass(), 9) }} | {{= _.lpad(sizeText(size(src[0])), 9) }} |' + 
-       grunt.util.linefeed + 
-       '| Minified | {{= _.lpad(pass(), 9) }} | {{= _.lpad(sizeText(size(src[1])), 9) }} |' + 
-       grunt.util.linefeed + 
-       '| Gzipped  | {{= _.lpad(pass(), 9) }} | {{= _.lpad(sizeText(gzipSize(src[1])), 9) }} |'
+      '###Size' + grunt.util.linefeed + grunt.util.linefeed + 
+      '|          | Version 1 | Version 2 |' + grunt.util.linefeed + 
+      '| :------- | --------: | --------: |' + grunt.util.linefeed +
+      '| Original | {{= _.lpad(pass(), 9) }} | {{= _.lpad(sizeText(size(src[0])), 9) }} |' + 
+      grunt.util.linefeed + 
+      '| Minified | {{= _.lpad(pass(), 9) }} | {{= _.lpad(sizeText(size(src[1])), 9) }} |' + 
+      grunt.util.linefeed + 
+      '| Gzipped  | {{= _.lpad(pass(), 9) }} | {{= _.lpad(sizeText(gzipSize(src[1])), 9) }} |'
     },
-    stdout: grunt.util.linefeed + 
-    'Original: {{= sizeText(size(src[0]), 7) }}' + grunt.util.linefeed + 
-    'Minified: {{= sizeText(size(src[1]), 7) }}' + grunt.util.linefeed + 
-    'Gzipped:  {{= sizeText(gzipSize(src[1]), 7) }} ({{= spaceSavings(src[1]) }}% savings)' + 
-    grunt.util.linefeed
+    stdout: 
+     'Original: {{= sizeText(size(src[0]), 7) }}' + grunt.util.linefeed + 
+     'Minified: {{= sizeText(size(src[1]), 7) }}' + grunt.util.linefeed + 
+     'Gzipped:  {{= sizeText(gzipSize(src[1]), 7) }} ({{= spaceSavings(src[1]) }}% savings)'
    }
   }
  }
