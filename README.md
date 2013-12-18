@@ -53,7 +53,7 @@ grunt.initConfig({
 ### Options
 
 #### options.stdout
-Type: `boolean` or `string`
+Type: `boolean` or `string`  
 Default: `true`
 
 If falsy, output to the command line is suppressed. 
@@ -67,11 +67,11 @@ Type: `object` or `array of object`
 Default: null
 
 One or more "inject" config objects having the following properties:
-| | | | 
-|:--|:--|:--|
-|'dest'| required | An injection target filepath string or array of injection target filepath strings.|
-|'text'| optional | A template string using mustache-style delimiters to define how results are injected into the file(s) specified by `dest`.|
-|'report'| optional | If truthy or not defined, inject status is output to the command line. Otherwise, no status is output. Default: `true`|
+| Name | Required | Description |
+| :---: | :---: | :--- |
+| **dest** | **Yes** | An injection target filepath string or array of injection target filepath strings. |
+| **text** | No | A template string using mustache-style delimiters to define how results are injected into the file(s) specified by `dest`. |
+| **report** | No | If truthy or not defined, inject status is output to the command line. Otherwise, no status is output. Default: `true` |
 
 The template defined by `text` is used to:
 
@@ -82,7 +82,7 @@ The template defined by `text` is used to:
 - determine the text to inject into the destination file(s) (if changes are detected)
 
 #### options.injectReport
-Type: `boolean` 
+Type: `boolean`  
 Default: true
 
 Provides a default for the 'report' property of 'inject' config objects.
