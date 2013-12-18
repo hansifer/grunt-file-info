@@ -26,6 +26,7 @@ module.exports = function(grunt) {
     this.data.sizeText = sizeText;
     this.data.spaceSavings = spaceSavings;
     this.data.modified = modified;
+    this.data.modifiedAgo = modifiedAgo;
     this.data.pass = function(i) {
       if (!arguments.length) {
         i = that.data.i;
@@ -36,6 +37,7 @@ module.exports = function(grunt) {
 
     grunt.template.addDelimiters('doubleBrace', '{{', '}}');
 
+    var newValues;
     var fieldDiffs = {}; // for values that either increased or decreased, add a property where name is fieldIndex and value is bytes delta (positive if up, negative if down)
     if (this.options().inject && this.options().inject.dest && this.options().inject.text) {
       if (grunt.file.exists(this.options().inject.dest)) {
@@ -54,7 +56,7 @@ module.exports = function(grunt) {
 
           // translate current values through grunt templating to gen new values
 
-          var newValues = [undefined]; // pad so that first new value is at index 1
+          newValues = [undefined]; // pad so that first new value is at index 1
           for (i = 0; i < templateFields.length; i++) {
             this.data.i = i + 1;
             newValues.push(grunt.template.process(templateFields[i], {
@@ -208,6 +210,10 @@ module.exports = function(grunt) {
 
   function modified(filepath) {
     return require('fs').lstatSync(filepath).mtime;
+  }
+
+  function modifiedAgo(filepath) {
+    return require('moment')(require('fs').lstatSync(filepath).mtime).fromNow();
   }
 
   // if comparing file size fields, return file size delta in bytes. eg, fieldDiff('2 kB', '2 bytes') -- > -1998
