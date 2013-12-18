@@ -70,11 +70,11 @@ One or more "inject" config objects having the following properties:
 
 |  | Required | Description |
 | :---: | :---: | :--- |
-| `'dest'` | **Yes** | An injection target filepath string or array of injection target filepath strings. |
-| `'text'` | No | A template string using mustache-style delimiters to define how results are injected into the file(s) specified by `'dest'`. Default: the default template. |
-| `'report'` | No | If truthy, inject status is output to the command line. Otherwise, no status is reported. Default: `true` |
+| `dest` | **Yes** | An injection target filepath string or array of injection target filepath strings. |
+| `text` | **Yes** | A template string using mustache-style delimiters to define how results are injected into the file(s) specified by `dest`. Default: the default template. |
+| `report` | No | If truthy, inject status is output to the command line. Otherwise, no status is reported. Default: `true` |
 
-The template defined by `'text'` is used to:
+The template defined by `text` is used to:
 
 - identify the portion of text to replace in the injection target file
 
@@ -86,7 +86,7 @@ The template defined by `'text'` is used to:
 Type: `boolean`  
 Default: `true`
 
-Provides a default for the `'report'` property of `options.inject` config objects.
+Provides a default for the `report` property of `options.inject` config objects.
 
 ### Template Functions
 
