@@ -64,16 +64,17 @@ If a string is passed, it is applied as a mustache-style-delimited template spec
 
 #### options.inject
 Type: `object` or `array of object`  
-Default: null
+Default: `null`
 
 One or more "inject" config objects having the following properties:
-| Name | Required | Description |
-| :---: | :---: | :--- |
-| **dest** | **Yes** | An injection target filepath string or array of injection target filepath strings. |
-| **text** | No | A template string using mustache-style delimiters to define how results are injected into the file(s) specified by `dest`. |
-| **report** | No | If truthy or not defined, inject status is output to the command line. Otherwise, no status is output. Default: `true` |
 
-The template defined by `text` is used to:
+|  | Required | Description |
+| :---: | :---: | :--- |
+| `'dest'` | **Yes** | An injection target filepath string or array of injection target filepath strings. |
+| `'text'` | No | A template string using mustache-style delimiters to define how results are injected into the file(s) specified by `'dest'`. Default: the default template. |
+| `'report'` | No | If truthy, inject status is output to the command line. Otherwise, no status is reported. Default: `true` |
+
+The template defined by `'text'` is used to:
 
 - identify the portion of text to replace in the injection target file
 
@@ -83,9 +84,9 @@ The template defined by `text` is used to:
 
 #### options.injectReport
 Type: `boolean`  
-Default: true
+Default: `true`
 
-Provides a default for the 'report' property of 'inject' config objects.
+Provides a default for the `'report'` property of `options.inject` config objects.
 
 ### Template Functions
 
@@ -108,6 +109,7 @@ Returns the date that the contents of the file specified by _filepath_ were last
 
 #### modifiedAgo (`string` _filepath_)
 Returns a string (eg, "10 days ago") describing how long ago the contents of the file specified by _filepath_ were last modified.
+
 
 Additionally, the following function is available within fields of templates defined by `options.inject.text`:
 
