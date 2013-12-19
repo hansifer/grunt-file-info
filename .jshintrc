@@ -1,4 +1,7 @@
 {
+  "expr": true,
+  "smarttabs": true,
+  "validthis": true,
   "curly": true,
   "eqeqeq": true,
   "immed": true,
