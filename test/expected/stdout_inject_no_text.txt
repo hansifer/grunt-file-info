@@ -1,0 +1,10 @@
+Running "file_info:inject_no_text" (file_info) task
+
+  file_info config error for target inject_no_text: inject requires dest and text
+
+  inject_no_text file sizes:
+
+  test/fixtures/source_file.js                22.1 kB (831 bytes gzipped)
+  test/fixtures/minified_source_file.js       16.4 kB (601 bytes gzipped)
+
+Done, without errors.

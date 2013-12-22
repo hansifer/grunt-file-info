@@ -1,0 +1,35 @@
+Running "file_info:wildcard_src" (file_info) task
+
+0001
+Path: test/fixtures/minified_source_file.js
+Name: minified_source_file.js
+Type: js
+Size: 16.4 kB
+Gzip: 601 bytes (96.33% savings)
+Date: Sat Dec 21 2013
+
+0002
+Path: test/fixtures/minified_source_file_v2.js
+Name: minified_source_file_v2.js
+Type: js
+Size: 18 kB
+Gzip: 615 bytes (96.58% savings)
+Date: Sat Dec 21 2013
+
+0003
+Path: test/fixtures/source_file.js
+Name: source_file.js
+Type: js
+Size: 22.1 kB
+Gzip: 831 bytes (96.23% savings)
+Date: Sat Dec 21 2013
+
+0004
+Path: test/fixtures/source_file_v2.js
+Name: source_file_v2.js
+Type: js
+Size: 28 kB
+Gzip: 878 bytes (96.87% savings)
+Date: Sat Dec 21 2013
+
+Done, without errors.

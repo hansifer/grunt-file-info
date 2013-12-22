@@ -1,0 +1,7 @@
+Running "file_info:stdout_template_2" (file_info) task
+
+Original:      22.1 kB
+Minified:      16.4 kB
+Gzipped:          601 bytes (96.33% savings)
+
+Done, without errors.

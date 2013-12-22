@@ -1,0 +1,3 @@
+Running "file_info:stdout_false" (file_info) task
+
+Done, without errors.

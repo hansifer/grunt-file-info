@@ -1,0 +1,7 @@
+###Size
+
+|          | Version 1 | Version 2 |
+| :------- | --------: | --------: |
+| Original |     28 kB |           |
+| Minified |   16.4 kB |           |
+| Gzipped  | 601 bytes |           |

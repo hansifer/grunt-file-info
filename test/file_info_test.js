@@ -22,27 +22,64 @@ var grunt = require('grunt');
     test.ifError(value)
 */
 
-exports.file_info = {
+// source: http://stackoverflow.com/a/6969486/384062
+var escapeRegExp = function(iStr) {
+  return iStr.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+};
+
+var file_info = {
   setUp: function(done) {
     // setup here if necessary
     done();
-  },
-  default_options: function(test) {
-    test.expect(1);
-
-    var actual = grunt.file.read('tmp/default_options');
-    var expected = grunt.file.read('test/expected/default_options');
-    test.equal(actual, expected, 'should describe what the default behavior is.');
-
-    test.done();
-  },
-  custom_options: function(test) {
-    test.expect(1);
-
-    var actual = grunt.file.read('tmp/custom_options');
-    var expected = grunt.file.read('test/expected/custom_options');
-    test.equal(actual, expected, 'should describe what the custom option(s) behavior is.');
-
-    test.done();
-  },
+  }
 };
+
+addStdoutComparisonTest(file_info, 'default_options');
+addStdoutComparisonTest(file_info, 'stdout_false');
+addStdoutComparisonTest(file_info, 'stdout_true');
+addStdoutComparisonTest(file_info, 'stdout_template_1');
+addStdoutComparisonTest(file_info, 'stdout_template_2');
+addStdoutComparisonTest(file_info, 'single_src_arrayed');
+addStdoutComparisonTest(file_info, 'single_src');
+addStdoutComparisonTest(file_info, 'wildcard_src');
+
+addStdoutComparisonTest(file_info, 'inject_no_text');
+addStdoutComparisonTest(file_info, 'inject_no_dest');
+addStdoutComparisonTest(file_info, 'inject_new_dest');
+addStdoutComparisonTest(file_info, 'inject_overlay');
+addStdoutComparisonTest(file_info, 'inject_multiple_dest_1');
+addStdoutComparisonTest(file_info, 'inject_multiple_dest_2');
+
+addComparisonTest(file_info, 'inject_new_dest', ['inject_dest_1.txt']);
+addComparisonTest(file_info, 'inject_overlay', ['inject_dest_1.txt']);
+addComparisonTest(file_info, 'inject_multiple_dest_1', ['inject_dest_1.txt', 'inject_dest_2.txt', 'inject_dest_3.txt']);
+addComparisonTest(file_info, 'inject_multiple_dest_2', ['inject_dest_1.txt', 'inject_dest_2.txt', 'inject_dest_3.txt']);
+
+
+function addStdoutComparisonTest(obj, name, type, desc) {
+  return addComparisonTest(obj, name, ['stdout_' + name + '.txt'], type, desc);
+}
+
+function addComparisonTest(obj, name, filenames, type, desc) {
+  type = type || 'contains';
+
+  obj[name] = function(test) {
+    test.expect(filenames.length);
+
+    var actual, expected;
+    filenames.forEach(function(el) {
+      actual = grunt.file.read('test/actual/' + el);
+      expected = grunt.file.read('test/expected/' + el);
+
+      if (type === 'equals') {
+        test.equal(actual, expected, desc);
+      } else /*if (type === 'contains')*/ {
+        test.ok((new RegExp(escapeRegExp(expected))).test(actual), desc);
+      }
+    });
+
+    test.done();
+  };
+}
+
+exports.file_info = file_info;

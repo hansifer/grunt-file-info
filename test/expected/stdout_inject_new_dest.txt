@@ -1,0 +1,10 @@
+Running "file_info:inject_new_dest" (file_info) task
+
+  Created file test/actual/inject_dest_1.txt
+
+  inject_new_dest file sizes:
+
+  test/fixtures/source_file.js                22.1 kB (831 bytes gzipped)
+  test/fixtures/minified_source_file.js       16.4 kB (601 bytes gzipped)
+
+Done, without errors.

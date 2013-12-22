@@ -1,0 +1,11 @@
+Running "file_info:single_src" (file_info) task
+
+0001
+Path: test/fixtures/source_file.js
+Name: source_file.js
+Type: js
+Size: 22.1 kB
+Gzip: 831 bytes (96.23% savings)
+Date: Sat Dec 21 2013
+
+Done, without errors.
