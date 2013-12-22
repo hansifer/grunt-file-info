@@ -2,6 +2,7 @@
 
 Display file info (name, modification date, size) of one or more files and optionally inject it into a file. Ideal for automatically updating README.md with src file size stats as they change.
 
+
 ## Getting Started
 This plugin requires Grunt `~0.4.1`
 
@@ -17,11 +18,13 @@ Once the plugin has been installed, it may be enabled inside your Gruntfile with
 grunt.loadNpmTasks('grunt-file-info');
 ```
 
+
 ## The `file_info` task
 
 _Run this task with the `grunt file_info` command._
 
 Task targets, files and options may be specified according to the grunt [Configuring tasks](http://gruntjs.com/configuring-tasks) guide.
+
 
 ### Overview
 In your project's Gruntfile, add a section named `file_info` to the data object passed into `grunt.initConfig()`.
@@ -50,6 +53,7 @@ grunt.initConfig({
 });
 ```
 
+
 ### Options
 
 #### options.stdout
@@ -58,20 +62,20 @@ Default: `true`
 
 If falsy, output to the command line is suppressed. 
 
-If `true`, results for each file specified by `src` are output to the command line using the default template.
+If `true`, results for each file specified by `src` are output to the command line using the default layout.
 
-If a string is passed, it is applied as a mustache-style-delimited template specifying how results are output to the command line.
+If a string is passed, it is applied as a template (using mustache-style delimiters) specifying how results are output to the command line.
 
 #### options.inject
 Type: `object` or `array of object`  
-Default: `null`
+Default: `undefined`
 
-One or more "inject" config objects having the following properties:
+One or more inject config objects having the following properties:
 
 |  | Required | Description |
 | :---: | :---: | :--- |
 | `dest` | **Yes** | An injection target filepath string or array of injection target filepath strings. |
-| `text` | **Yes** | A template string using mustache-style delimiters to define how results are injected into the file(s) specified by `dest`. Default: the default template. |
+| `text` | **Yes** | A template string (using mustache-style delimiters) to define how results are injected into the file(s) specified by `dest`. |
 | `report` | No | If truthy, inject status is output to the command line. Otherwise, no status is reported. Default: `true` |
 
 The template defined by `text` is used to:
@@ -80,13 +84,14 @@ The template defined by `text` is used to:
 
 - extract current field values from the injection target file for comparison against calculated values
 
-- determine the text to inject into the destination file(s) (if changes are detected)
+- determine the text to inject into the injection target file(s) (if changes are detected)
 
 #### options.injectReport
 Type: `boolean`  
 Default: `true`
 
-Provides a default for the `report` property of `options.inject` config objects.
+Provides a default value for the `report` property of `options.inject` config objects.
+
 
 ### Template Functions
 
@@ -110,11 +115,26 @@ Returns the date that the contents of the file specified by _filepath_ were last
 #### modifiedAgo (`string` _filepath_)
 Returns a string (eg, "10 days ago") describing how long ago the contents of the file specified by _filepath_ were last modified.
 
+#### filename (`string` _filepath_)
+Returns the file name portion (including file type) of a file path.
+
+#### filetype (`string` _filepath_)
+Returns the file type portion (without the leading '.') of a file path.
+
 
 Additionally, the following function is available within fields of templates defined by `options.inject.text`:
 
 #### pass ([`number` _index_])
 Returns the matched value of a template field when that template is matched against existing text in a file. _index_ is the 1-based order of the matched field within the template and defaults to the order of the field in which `pass()` is called.
+
+
+### Template Variables
+
+The following variables are available within fields of templates defined by `options.stdout` and `options.inject.text`:
+
+#### filesSrc
+An array of expanded filepath strings of all src files to get file info for.
+
 
 ### Usage Examples
 
@@ -196,10 +216,6 @@ Size: 22.5 kB
 
 The following example injects file size information for a source file and its minified version into a README.md file according to a template specified by `options.inject.text`. The template is used to match the portion of the file to replace as well as to generate the replacement text. 
 
-File injection occurs only if a portion of the destination file matches `options.inject.text` and one or more corresponding field values _change_, in which case a diff is output to the command line for the matching portion of text. If no portion of the destination file matches `options.inject.text` or no change is detected, file information is output to the command line according to the template defined in `options.stdout`, `options.inject.text`, or the default layout. 
-
-If the destination file does not exist, it is created and populated with the generated text.
-
 ```js
 grunt.initConfig({
   file_info: {
@@ -225,7 +241,7 @@ grunt.initConfig({
 });
 ```
 
-Injected text:&nbsp;&nbsp;<nowiki>*</nowiki>
+Injected text:
 ```
 ###Size
 
@@ -235,11 +251,16 @@ Injected text:&nbsp;&nbsp;<nowiki>*</nowiki>
 | Minified |   17.9 kB |   19.7 kB |
 | Gzipped  |    3.9 kB |    4.1 kB |
 ```
-<nowiki>*</nowiki> _Text is written to the destination file in this case only if any of the size values for "Version 1" have changed. Note that "Version 2" values in this case are simply propagated from the existing text in the file._
+
+File injection occurs only if a portion of the destination file matches `options.inject.text` and one or more corresponding field values _change_, in which case a diff report is normally output to the command line for the matching portion of text.
+
+If the destination file does not exist, it is created and populated with the generated text. In that case the template function `pass()` yields an empty string.
+
+Note that in the example above, text is written to the destination file only if any of the size values _for "Version 1"_ have changed. "Version 2" values in this case are simply propagated from existing text.
 
 #### Kitchen Sink
 
-The following comprehensive example shows the use of multiple `file_info` targets that write file information about a number of source files to the same portion of a README.md file.
+The following extensive example shows the use of two `file_info` targets that each write source file stats for a particular version of an application _to the same portion_ of a README.md file.
 
 ```js
 grunt.initConfig({
