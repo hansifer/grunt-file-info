@@ -43,6 +43,6 @@
     "grunt": "~0.4.1"
   },
   "keywords": [
-    "gruntplugin"
+    "gruntplugin", "file", "stats", "size", "gzip", "documentation", "docs"
   ]
 }
