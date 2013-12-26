@@ -1,6 +1,6 @@
 # grunt-file-info
 
-Display file info (name, modification date, size) of one or more files and optionally inject it into a file. Ideal for automatically updating README.md with src file size stats as they change.
+Display file info (name, modification date, size) of one or more files and optionally inject it into a file. Ideal for automatically updating README.md with source file size stats as they change.
 
 
 ## Getting Started
