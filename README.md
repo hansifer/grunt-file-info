@@ -2,6 +2,8 @@
 
 Generate project file stats. Ideal for automatically updating project documentation with source file sizes.
 
+![inject.png](https://raw.github.com/hansifer/grunt-file-info/master/inject.png)
+
 ## Getting Started
 This plugin requires Grunt `~0.4.1`
 
