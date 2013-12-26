@@ -1,7 +1,7 @@
 {
   "name": "grunt-file-info",
   "description": "Generate project file stats. Ideal for automatically updating project documentation with source file sizes.",
-  "version": "0.1.9",
+  "version": "1.0.0",
   "homepage": "https://github.com/hansifer/grunt-file-info",
   "author": {
     "name": "Hans Meyer",
