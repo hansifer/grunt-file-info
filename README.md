@@ -1,7 +1,6 @@
 # grunt-file-info
 
-Display file info (name, modification date, size) of one or more files and optionally inject it into a file. Ideal for automatically updating README.md with source file size stats as they change.
-
+Generate project file stats. Ideal for automatically updating project documentation with source file sizes.
 
 ## Getting Started
 This plugin requires Grunt `~0.4.1`
