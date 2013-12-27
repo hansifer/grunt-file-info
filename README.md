@@ -253,7 +253,9 @@ Injected text:
 | Gzipped  |    3.9 kB |    4.1 kB |
 ```
 
-File injection occurs only if a portion of the destination file matches `options.inject.text` and one or more corresponding field values _change_, in which case a diff report is normally output to the command line for the matching portion of text.
+File injection occurs only if a portion of the destination file matches `options.inject.text` and one or more corresponding field values _change_, in which case a diff report is normally output to the command line for the matching portion of text. For example:
+
+![diff.png](https://raw.github.com/hansifer/grunt-file-info/master/diff.png)
 
 If the destination file does not exist, it is created and populated with the generated text. In that case the template function `pass()` yields an empty string.
 

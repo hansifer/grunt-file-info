@@ -144,7 +144,7 @@ module.exports = function(grunt) {
               var reLF = new RegExp(grunt.util.linefeed + '|^', 'g');
 
               grunt.log.writeln();
-              grunt.log.writeln(('  Updating ' + this.target + ' sizes in ' + dest + ' from:').cyan);
+              grunt.log.writeln(('  Updating ' + this.target + ' stats in ' + dest + ' from:').cyan);
 
               grunt.log.writeln(this.data.currentValues[0].replace(reLF, grunt.util.linefeed + '  ')); // indent output
 
