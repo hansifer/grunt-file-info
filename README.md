@@ -1,6 +1,6 @@
 # grunt-file-info
 
-Generate project file stats. Ideal for automatically updating project documentation with source file sizes.
+Generate project file stats and automate template-driven updates of such to project documentation.
 
 ![inject.png](https://raw.github.com/hansifer/grunt-file-info/master/inject.png)
 
