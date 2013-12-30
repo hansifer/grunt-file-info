@@ -50,7 +50,7 @@ module.exports = function(grunt) {
     }
 
     if (!('stdout' in this.options()) || this.options().stdout === true) {
-      grunt.log.writeln(grunt.util.linefeed + (('  ' + this.target + ' file sizes:').cyan) + grunt.util.linefeed);
+      grunt.log.writeln(grunt.util.linefeed + (('  ' + this.target + ' stats:').cyan) + grunt.util.linefeed);
 
       var colWidth = 0;
       this.filesSrc.forEach(function(filepath) {
