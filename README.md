@@ -35,7 +35,7 @@ The following example injects file size information for a source file and its mi
 ```js
 grunt.initConfig({
   file_info: {
-    source: {
+    source_files: {
       src: ['source_file.js', 'minified_source_file.js'],
       options: {
         inject: {
@@ -71,27 +71,38 @@ If a string is passed, it is applied as a template (using mustache-style delimit
 Type: `object` or `array of object`  
 Default: `undefined`
 
-One or more inject config objects having the following properties:
+An inject config object or array of inject config objects having the following properties:
 
 |  | Required | Description |
 | :---: | :---: | :--- |
 | `dest` | **Yes** | An injection target filepath string or array of injection target filepath strings. |
-| `text` | **Yes** | A template string (using mustache-style delimiters) to define how results are injected into the file(s) specified by `dest`. |
+| `text` | **Yes** | A template string (using mustache-style delimiters) to define where and how results are injected into the file(s) specified by `dest`. |
 | `report` | No | If truthy, inject status is output to the command line. Otherwise, no status is reported. Default: `true` |
 
 The template defined by `text` is used to:
 
-- identify the portion of text to replace in the injection target file
+1) identify the portion of text to replace in an injection target file
 
-- extract current field values from the injection target file for comparison against calculated values
+2) extract current field values from an injection target file for comparison against calculated values
 
-- determine the text to inject into the injection target file(s) (if changes are detected)
+3) determine the text to inject into an injection target file (if changes are detected)
 
 #### options.injectReport
 Type: `boolean`  
 Default: `true`
 
 Provides a default value for the `report` property of `options.inject` config objects.
+
+
+### `stdout` and `text` Templates
+
+`options.stdout` and `options.inject.text` values are processed through [Lo-Dash templating](http://lodash.com/docs#template) via Grunt. As such, these templates conform to the semantics set forth by LoDash templating. 
+
+In order to control the timing of template processing within the file_info task, custom delimiters of the form `{{ }}` are used for these templates.
+
+[Lo-Dash functions](http://lodash.com/docs) are accessible within such templates via standard Lo-Dash syntax (eg, `_.first([1,2,3])`). Additionally, [`underscore.string`](https://github.com/epeli/underscore.string) methods are similiarly accessible (eg, `_.titleize("hello cruel world")`).
+
+The file_info task also furnishes certain [Template Functions](https://github.com/hansifer/grunt-file-info#template-functions) and [Template Variables](https://github.com/hansifer/grunt-file-info#template-variables) within template fields, as outlined below.
 
 
 ### Template Functions
@@ -105,7 +116,7 @@ Returns the size in bytes of the file specified by _filepath_.
 Returns the gzipped size in bytes of the file specified by _filepath_.
 
 #### sizeText (`number` _bytes_ [, `number` _lpadding_])
-Returns optionally-padded text (eg, "2 kB") corresponding to a number of bytes.
+Returns unit-adjusted and optionally-padded text (eg, "2 kB", "632 bytes") corresponding to a number of bytes.
 
 #### spaceSavings (`string` _filepath_)
 Returns the percentage space savings gained by gzipping the file specified by _filepath_.
@@ -114,7 +125,7 @@ Returns the percentage space savings gained by gzipping the file specified by _f
 Returns the date that the contents of the file specified by _filepath_ were last modified.
 
 #### modifiedAgo (`string` _filepath_)
-Returns a string (eg, "10 days ago") describing how long ago the contents of the file specified by _filepath_ were last modified.
+Returns a string (eg, "10 days ago") describing how long ago the contents of the file specified by _filepath_ were last modified. This function is generally more useful to stdout templates than file injection templates.
 
 #### filename (`string` _filepath_)
 Returns the file name portion (including file type) of a file path.
@@ -122,11 +133,12 @@ Returns the file name portion (including file type) of a file path.
 #### filetype (`string` _filepath_)
 Returns the file type portion (without the leading '.') of a file path.
 
+---
 
 Additionally, the following function is available within fields of templates defined by `options.inject.text`:
 
 #### pass ([`number` _index_])
-Returns the matched value of a template field when that template is matched against existing text in a file. _index_ is the 1-based order of the matched field within the template and defaults to the order of the field in which `pass()` is called.
+Returns the matched value of a template field when that template is matched against existing text of an injection target file. _index_ is the 1-based order of the matched field within the template and defaults to the order of the field in which `pass()` is called.
 
 
 ### Template Variables
@@ -134,7 +146,7 @@ Returns the matched value of a template field when that template is matched agai
 The following variables are available within fields of templates defined by `options.stdout` and `options.inject.text`:
 
 #### filesSrc
-An array of expanded filepath strings of all src files to get file info for.
+An array of expanded filepath strings of all src files to get file info for. Note that this is not the same as `src`, which refers to the raw (ie, non-expanded) value of the `src` property of the file_info config target object.
 
 
 ### Usage Examples
@@ -146,7 +158,7 @@ The following example simply outputs file size information for a source file and
 ```js
 grunt.initConfig({
     file_info: {
-        Source: {
+        source_files: {
             src: ['source_file.js', 'minified_source_file.js']
         }
     }
@@ -155,7 +167,7 @@ grunt.initConfig({
 
 Output:
 ```
-Source file sizes:
+source_files stats:
 
 source_file.js                22.5 kB (4.2 kB gzipped)
 minified_source_file.js       17.9 kB (3.9 kB gzipped)
@@ -168,7 +180,7 @@ The following example outputs file size information for a source file and its mi
 ```js
 grunt.initConfig({
   file_info: {
-    Source: {
+    source_files: {
       src: ['source_file.js', 'minified_source_file.js'],
       options: {
         stdout: 
@@ -193,11 +205,11 @@ The following example outputs a file's name, modification date, and size to the 
 ```js
 grunt.initConfig({
     file_info: {
-        Source: {
-            src: 'source_file.js',
+        source_files: {
+            src: 'src/source_file.js',
             options: {
                 stdout: 
-                  'Name: {{= src }}' + grunt.util.linefeed + 
+                  'Name: {{= filename(src) }}' + grunt.util.linefeed + 
                   'Date: {{= modified(src).toDateString() }}' + grunt.util.linefeed + 
                   'Size: {{= sizeText(size(src)) }}'
             }
@@ -220,7 +232,7 @@ The following example injects file size information for a source file and its mi
 ```js
 grunt.initConfig({
   file_info: {
-    Source: {
+    source_files: {
       src: ['source_file.js', 'minified_source_file.js'],
       options: {
         inject: {
@@ -257,13 +269,13 @@ File injection occurs only if a portion of the destination file matches `options
 
 ![diff.png](https://raw.github.com/hansifer/grunt-file-info/master/diff.png)
 
-If the destination file does not exist, it is created and populated with the generated text. In that case the template function `pass()` yields an empty string.
+If the destination file does not exist, it is created and populated with the generated text. In this case the template function `pass()` yields an empty string since there are no field values to propagate.
 
-Note that in the example above, text is written to the destination file only if any of the size values _for "Version 1"_ have changed. "Version 2" values in this case are simply propagated from existing text.
+Note that in the example above, text is written to the destination file only if any of the size values for "Version 1" have changed. "Version 2" values in this case are simply propagated from existing text.
 
 #### Kitchen Sink
 
-The following extensive example shows the use of two `file_info` targets that each write source file stats for a particular version of an application _to the same portion_ of a README.md file.
+The following extensive example shows the use of two `file_info` targets that each write source file stats for a particular version of an application _to the same portion_ (different columns of the same markdown table) of a README.md file.
 
 ```js
 grunt.initConfig({
