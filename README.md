@@ -94,7 +94,7 @@ Default: `true`
 Provides a default value for the `report` property of `options.inject` config objects.
 
 
-### [`stdout` and `text` Templates](https://github.com/hansifer/grunt-file-info#stdout-and-text-templates)
+### [Command-Line Output and File Injection Templates](https://github.com/hansifer/grunt-file-info#command-line-output-and-file-injection-templates)
 
 `options.stdout` and `options.inject.text` values are processed through [Lo-Dash templating](http://lodash.com/docs#template) via Grunt. As such, these templates conform to the semantics set forth by Lo-Dash template specs.
 
