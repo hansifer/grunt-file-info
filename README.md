@@ -96,11 +96,11 @@ Provides a default value for the `report` property of `options.inject` config ob
 
 ### `stdout` and `text` Templates
 
-`options.stdout` and `options.inject.text` values are processed through [Lo-Dash templating](http://lodash.com/docs#template) via Grunt. As such, these templates conform to the semantics set forth by LoDash templating. 
+`options.stdout` and `options.inject.text` values are processed through [Lo-Dash templating](http://lodash.com/docs#template) via Grunt. As such, these templates conform to the semantics set forth by Lo-Dash template specs.
 
 In order to control the timing of template processing within the file_info task, custom delimiters of the form `{{ }}` are used for these templates.
 
-[Lo-Dash functions](http://lodash.com/docs) are accessible within such templates via standard Lo-Dash syntax (eg, `_.first([1,2,3])`). Additionally, [`underscore.string`](https://github.com/epeli/underscore.string) methods are similiarly accessible (eg, `_.titleize("hello cruel world")`).
+[Lo-Dash functions](http://lodash.com/docs) are accessible within fields of such templates via standard Lo-Dash syntax (eg, `_.first([1,2,3])`). Additionally, [underscore.string](https://github.com/epeli/underscore.string) methods are similiarly accessible (eg, `_.titleize("hello cruel world")`).
 
 The file_info task also furnishes certain [Template Functions](https://github.com/hansifer/grunt-file-info#template-functions) and [Template Variables](https://github.com/hansifer/grunt-file-info#template-variables) within template fields, as outlined below.
 
@@ -275,7 +275,7 @@ Note that in the example above, text is written to the destination file only if 
 
 #### Kitchen Sink
 
-The following extensive example shows the use of two `file_info` targets that each write source file stats for a particular version of an application _to the same portion_ (different columns of the same markdown table) of a README.md file.
+The following extensive example shows the use of two `file_info` targets that each write source file stats for a particular version of an application to a corresponding column of the same markdown table of a README.md file.
 
 ```js
 grunt.initConfig({
