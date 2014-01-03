@@ -58,7 +58,7 @@ module.exports = function(grunt) {
       });
 
       this.filesSrc.forEach(function(filepath) {
-        grunt.log.writeln('  ' + grunt.util._.rpad(filepath, colWidth + 1).grey + sizeText(size(filepath), 8).grey + (' (' + sizeText(gzipSize(filepath)) + ' gzipped)').grey);
+        grunt.log.writeln('  ' + grunt.util._.rpad(filepath, colWidth + 1).grey + sizeText(size(filepath), 8, true).grey + (' (' + sizeText(gzipSize(filepath)) + ' gzipped)').grey);
       });
     } else if (this.options().stdout) {
       grunt.log.write(grunt.template.process(this.options().stdout, {
@@ -198,15 +198,15 @@ module.exports = function(grunt) {
     return require('zlib-browserify').gzipSync(grunt.file.read(filepath)).length;
   }
 
-  // return left-padded integer-right-aligned size string
+  // return size string; optionally left-pad; optionally integer-right-align for easy comparison
 
-  function sizeText(bytes, lpadding) {
+  function sizeText(bytes, lpadding, align) {
     var sizeStr;
 
     if (bytes > 999999) {
       sizeStr = '' + Math.round(bytes / 100000) / 10;
 
-      if (lpadding) {
+      if (align && lpadding) {
         if (/\./.test(sizeStr)) {
           lpadding += 2;
         }
@@ -217,7 +217,7 @@ module.exports = function(grunt) {
     } else if (bytes > 999) {
       sizeStr = '' + Math.round(bytes / 100) / 10;
 
-      if (lpadding) {
+      if (align && lpadding) {
         if (/\./.test(sizeStr)) {
           lpadding += 2;
         }
@@ -227,14 +227,18 @@ module.exports = function(grunt) {
     } else {
       sizeStr = '' + bytes;
 
-      if (lpadding) {
+      if (align && lpadding) {
         lpadding -= sizeStr.length;
         lpadding += 4;
       }
       sizeStr += ' bytes';
     }
 
-    return (lpadding ? grunt.util.repeat(lpadding, ' ') : '') + sizeStr;
+    if (lpadding) {
+      return grunt.util.repeat((align ? lpadding : lpadding - sizeStr.length), ' ') + sizeStr;
+    } else {
+      return sizeStr;
+    }
   }
 
   function spaceSavings(filepath) {
