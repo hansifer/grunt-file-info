@@ -240,13 +240,13 @@ grunt.initConfig({
           text: 
             '###Size' + 
             grunt.util.linefeed + grunt.util.linefeed + 
-            '|          | Version 1 | Version 2 |' + grunt.util.linefeed + 
-            '| :------- | --------: | --------: |' + grunt.util.linefeed +
-            '| Original | {{= _.lpad(sizeText(size(src[0])), 9) }} | {{= _.lpad(pass(), 9) }} |' + 
+            '|          | Dependent Version | Standalone Version |' + grunt.util.linefeed + 
+            '| :------- | ----------------: | -----------------: |' + grunt.util.linefeed + 
+            '| Original | {{= _.lpad(pass(), 17) }} | {{= sizeText(size(src[0]), 18) }} |' + 
             grunt.util.linefeed + 
-            '| Minified | {{= _.lpad(sizeText(size(src[1])), 9) }} | {{= _.lpad(pass(), 9) }} |' + 
+            '| Minified | {{= _.lpad(pass(), 17) }} | {{= sizeText(size(src[1]), 18) }} |' + 
             grunt.util.linefeed + 
-            '| Gzipped  | {{= _.lpad(sizeText(gzipSize(src[1])), 9) }} | {{= _.lpad(pass(), 9) }} |'
+            '| Gzipped  | {{= _.lpad(pass(), 17) }} | {{= sizeText(gzipSize(src[1]), 18) }} |'
         }
       }
     }
@@ -258,11 +258,11 @@ Injected text:
 ```
 ###Size
 
-|          | Version 1 | Version 2 |
-| :------- | --------: | --------: |
-| Original |   22.5 kB |   25.2 kB |
-| Minified |   17.9 kB |   19.7 kB |
-| Gzipped  |    3.9 kB |    4.1 kB |
+|          | Dependent Version | Standalone Version |
+| :------- | ----------------: | -----------------: |
+| Original |           22.5 kB |            57.5 kB |
+| Minified |              7 kB |            17.2 kB |
+| Gzipped  |            1.5 kB |             3.8 kB |
 ```
 
 File injection occurs only if a portion of the destination file matches `options.inject.text` and one or more corresponding field values _change_, in which case a diff report is normally output to the command line for the matching portion of text. For example:
