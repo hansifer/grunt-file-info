@@ -271,7 +271,7 @@ File injection occurs only if a portion of the destination file matches `options
 
 If the destination file does not exist, it is created and populated with the generated text. In this case the template function `pass()` yields an empty string since there are no field values to propagate.
 
-Note that in the example above, text is written to the destination file only if any of the size values for "Version 1" have changed. "Version 2" values in this case are simply propagated from existing text.
+Note that in the example above, text is written to the destination file only if any of the size values for "Standalone Version" have changed. "Dependent Version" values in this case are simply propagated from existing text.
 
 #### Kitchen Sink
 
@@ -287,13 +287,13 @@ grunt.initConfig({
      dest: 'README.md',
      text: 
       '###Size' + grunt.util.linefeed + grunt.util.linefeed + 
-      '|          | Version 1 | Version 2 |' + grunt.util.linefeed + 
-      '| :------- | --------: | --------: |' + grunt.util.linefeed +
-      '| Original | {{= _.lpad(sizeText(size(src[0])), 9) }} | {{= _.lpad(pass(), 9) }} |' + 
+      '|          | Dependent Version | Standalone Version |' + grunt.util.linefeed + 
+      '| :------- | ----------------: | -----------------: |' + grunt.util.linefeed + 
+      '| Original | {{= sizeText(size(src[0]), 17) }} | {{= _.lpad(pass(), 18) }} |' + 
       grunt.util.linefeed + 
-      '| Minified | {{= _.lpad(sizeText(size(src[1])), 9) }} | {{= _.lpad(pass(), 9) }} |' + 
+      '| Minified | {{= sizeText(size(src[1]), 17) }} | {{= _.lpad(pass(), 18) }} |' + 
       grunt.util.linefeed + 
-      '| Gzipped  | {{= _.lpad(sizeText(gzipSize(src[1])), 9) }} | {{= _.lpad(pass(), 9) }} |'
+      '| Gzipped  | {{= sizeText(gzipSize(src[1]), 17) }} | {{= _.lpad(pass(), 18) }} |'
     },
     stdout: 
      'Original: {{= sizeText(size(src[0]), 7) }}' + grunt.util.linefeed + 
@@ -308,13 +308,13 @@ grunt.initConfig({
      dest: 'README.md',
      text: 
       '###Size' + grunt.util.linefeed + grunt.util.linefeed + 
-      '|          | Version 1 | Version 2 |' + grunt.util.linefeed + 
-      '| :------- | --------: | --------: |' + grunt.util.linefeed +
-      '| Original | {{= _.lpad(pass(), 9) }} | {{= _.lpad(sizeText(size(src[0])), 9) }} |' + 
+      '|          | Dependent Version | Standalone Version |' + grunt.util.linefeed + 
+      '| :------- | ----------------: | -----------------: |' + grunt.util.linefeed + 
+      '| Original | {{= _.lpad(pass(), 17) }} | {{= sizeText(size(src[0]), 18) }} |' + 
       grunt.util.linefeed + 
-      '| Minified | {{= _.lpad(pass(), 9) }} | {{= _.lpad(sizeText(size(src[1])), 9) }} |' + 
+      '| Minified | {{= _.lpad(pass(), 17) }} | {{= sizeText(size(src[1]), 18) }} |' + 
       grunt.util.linefeed + 
-      '| Gzipped  | {{= _.lpad(pass(), 9) }} | {{= _.lpad(sizeText(gzipSize(src[1])), 9) }} |'
+      '| Gzipped  | {{= _.lpad(pass(), 17) }} | {{= sizeText(gzipSize(src[1]), 18) }} |'
     },
     stdout: 
      'Original: {{= sizeText(size(src[0]), 7) }}' + grunt.util.linefeed + 
