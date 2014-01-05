@@ -27,7 +27,7 @@ _Run this task with the `grunt file_info` command._
 Task targets, files and options may be specified according to the grunt [Configuring tasks](http://gruntjs.com/configuring-tasks) guide.
 
 
-### [Overview](https://github.com/hansifer/grunt-file-info#overview)
+### [Overview](#overview)
 In your project's Gruntfile, add a section named `file_info` to the data object passed into `grunt.initConfig()`.
 
 The following example injects file size information for a source file and its minified version into a README.md file that already has a section whose layout conforms to the `options.inject.text` template:
@@ -55,7 +55,7 @@ grunt.initConfig({
 ```
 
 
-### [Options](https://github.com/hansifer/grunt-file-info#options)
+### [Options](#options)
 
 #### options.stdout
 Type: `boolean` or `string`  
@@ -94,7 +94,7 @@ Default: `true`
 Provides a default value for the `report` property of `options.inject` config objects.
 
 
-### [Command-Line Output and File Injection Templates](https://github.com/hansifer/grunt-file-info#command-line-output-and-file-injection-templates)
+### [Command-Line Output and File Injection Templates](#command-line-output-and-file-injection-templates)
 
 `options.stdout` and `options.inject.text` values are processed through [Lo-Dash templating](http://lodash.com/docs#template) via Grunt. As such, these templates conform to the semantics set forth by Lo-Dash template specs.
 
@@ -102,10 +102,10 @@ In order to control the timing of template processing within the file_info task,
 
 [Lo-Dash functions](http://lodash.com/docs) are accessible within fields of such templates via standard Lo-Dash syntax (eg, `_.first([1,2,3])`). Additionally, [underscore.string](https://github.com/epeli/underscore.string) methods are similiarly accessible (eg, `_.titleize("hello cruel world")`).
 
-The file_info task also furnishes certain [Template Functions](https://github.com/hansifer/grunt-file-info#template-functions) and [Template Variables](https://github.com/hansifer/grunt-file-info#template-variables) within template fields, as outlined below.
+The file_info task also furnishes certain [Template Functions](#template-functions) and [Template Variables](#template-variables) within template fields, as outlined below.
 
 
-### [Template Functions](https://github.com/hansifer/grunt-file-info#template-functions)
+### [Template Functions](#template-functions)
 
 The following functions are available within fields of templates defined by `options.stdout` and `options.inject.text`:
 
@@ -141,7 +141,7 @@ Additionally, the following function is available within fields of templates def
 Returns the matched value of a template field when that template is matched against existing text of an injection target file. _index_ is the 1-based order of the matched field within the template and defaults to the order of the field in which `pass()` is called.
 
 
-### [Template Variables](https://github.com/hansifer/grunt-file-info#template-variables)
+### [Template Variables](#template-variables)
 
 The following variables are available within fields of templates defined by `options.stdout` and `options.inject.text`:
 
@@ -149,7 +149,7 @@ The following variables are available within fields of templates defined by `opt
 An array of expanded filepath strings of all src files to get file info for. Note that this is not the same as `src`, which refers to the raw (ie, non-expanded) value of the `src` property of the file_info config target object.
 
 
-### [Usage Examples](https://github.com/hansifer/grunt-file-info#usage-examples)
+### [Usage Examples](#usage-examples)
 
 #### Default Options
 
