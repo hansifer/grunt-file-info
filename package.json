@@ -1,7 +1,7 @@
 {
   "name": "grunt-file-info",
-  "description": "Generate project file stats and automate template-driven updates of such to project documentation.",
-  "version": "1.0.4",
+  "description": "Automate template-driven updates of project file stats to project documentation.",
+  "version": "1.0.5",
   "homepage": "https://github.com/hansifer/grunt-file-info",
   "author": {
     "name": "Hans Meyer",

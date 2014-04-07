@@ -14,7 +14,7 @@ module.exports = function(grunt) {
   // creation: http://gruntjs.com/creating-tasks
 
   // TODO: add support for optional 'find' option to allow specification of regexp of text to replace. In the absence of 'find' option, use 'text' to generate this regexp. In 'text' value, use '{{= pass(n) }}' to specify passthru values, where n is the index of a capturing group from the 'find' (regexp) value.
-  grunt.registerMultiTask('file_info', 'Generate project file stats and automate template-driven updates of such to project documentation.', function() {
+  grunt.registerMultiTask('file_info', 'Automate template-driven updates of project file stats to project documentation.', function() {
     var that = this;
 
     this.data.filesSrc = this.filesSrc;
