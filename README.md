@@ -135,6 +135,7 @@ Returns the file type portion (without the leading '.') of a file path.
 
 #### config (`string` configName)
 Returns the value of the item stored in grunt.config(configName).
+
 ---
 
 Additionally, the following function is available within fields of templates defined by `options.inject.text`:
