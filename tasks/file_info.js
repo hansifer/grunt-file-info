@@ -28,6 +28,7 @@ module.exports = function(grunt) {
     this.data.modifiedAgo = modifiedAgo;
     this.data.filename = filename;
     this.data.filetype = filetype;
+    this.data.config = gruntConfig;
     this.data.pass = function(i) {
       if (!arguments.length) {
         i = that.data.i;
@@ -316,5 +317,9 @@ module.exports = function(grunt) {
     }
 
     return ret;
+  }
+
+  function gruntConfig(name) {
+    return grunt.config(name);
   }
 };
