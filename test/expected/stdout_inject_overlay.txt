@@ -1,6 +1,6 @@
 Running "file_info:inject_overlay" (file_info) task
 
-  Updating inject_overlay sizes in test/actual/inject_dest_1.txt from:
+  Updating inject_overlay stats in test/actual/inject_dest_1.txt from:
 
   ###Size
   
@@ -8,7 +8,7 @@ Running "file_info:inject_overlay" (file_info) task
   | :------- | --------: | --------: |
   | Original |   22.1 kB |           |
   | Minified |   16.4 kB |           |
-  | Gzipped  | 601 bytes |           |
+  | Gzipped  | 974 bytes |           |
 
   to:
 
@@ -18,11 +18,11 @@ Running "file_info:inject_overlay" (file_info) task
   | :------- | --------: | --------: |
   | Original |   22.1 kB |     28 kB |
   | Minified |   16.4 kB |     18 kB |
-  | Gzipped  | 601 bytes | 615 bytes |
+  | Gzipped  | 974 bytes | 991 bytes |
 
-  inject_overlay file sizes:
+  inject_overlay stats:
 
-  test/fixtures/source_file_v2.js                28 kB (878 bytes gzipped)
-  test/fixtures/minified_source_file_v2.js       18 kB (615 bytes gzipped)
+  test/fixtures/source_file_v2.js                28 kB (1.4 kB gzipped)
+  test/fixtures/minified_source_file_v2.js       18 kB (991 bytes gzipped)
 
 Done, without errors.

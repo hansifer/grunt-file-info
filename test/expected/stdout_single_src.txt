@@ -5,7 +5,7 @@ Path: test/fixtures/source_file.js
 Name: source_file.js
 Type: js
 Size: 22.1 kB
-Gzip: 831 bytes (96.23% savings)
-Date: Sat Dec 21 2013
+Gzip: 1.3 kB (94.01% savings)
+Date: Sat Jun 14 2014
 
 Done, without errors.

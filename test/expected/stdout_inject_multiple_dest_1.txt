@@ -1,6 +1,6 @@
 Running "file_info:inject_multiple_dest_1" (file_info) task
 
-  Updating inject_multiple_dest_1 sizes in test/actual/inject_dest_1.txt from:
+  Updating inject_multiple_dest_1 stats in test/actual/inject_dest_1.txt from:
 
   ###Size
   
@@ -8,7 +8,7 @@ Running "file_info:inject_multiple_dest_1" (file_info) task
   | :------- | --------: | --------: |
   | Original |   22.1 kB |     28 kB |
   | Minified |   16.4 kB |     18 kB |
-  | Gzipped  | 601 bytes | 615 bytes |
+  | Gzipped  | 974 bytes | 991 bytes |
 
   to:
 
@@ -18,15 +18,15 @@ Running "file_info:inject_multiple_dest_1" (file_info) task
   | :------- | --------: | --------: |
   | Original |   22.1 kB |   22.1 kB |
   | Minified |   16.4 kB |     18 kB |
-  | Gzipped  | 601 bytes | 615 bytes |
+  | Gzipped  | 974 bytes | 991 bytes |
 
   Created file test/actual/inject_dest_2.txt
 
   Created file test/actual/inject_dest_3.txt
 
-  inject_multiple_dest_1 file sizes:
+  inject_multiple_dest_1 stats:
 
-  test/fixtures/source_file.js                   22.1 kB (831 bytes gzipped)
-  test/fixtures/minified_source_file_v2.js       18 kB (615 bytes gzipped)
+  test/fixtures/source_file.js                   22.1 kB (1.3 kB gzipped)
+  test/fixtures/minified_source_file_v2.js       18 kB (991 bytes gzipped)
 
 Done, without errors.

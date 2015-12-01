@@ -1,6 +1,6 @@
 Running "file_info:inject_multiple_dest_2" (file_info) task
 
-  Updating inject_multiple_dest_2 sizes in test/actual/inject_dest_1.txt from:
+  Updating inject_multiple_dest_2 stats in test/actual/inject_dest_1.txt from:
 
   ###Size
   
@@ -8,7 +8,7 @@ Running "file_info:inject_multiple_dest_2" (file_info) task
   | :------- | --------: | --------: |
   | Original |   22.1 kB |   22.1 kB |
   | Minified |   16.4 kB |     18 kB |
-  | Gzipped  | 601 bytes | 615 bytes |
+  | Gzipped  | 974 bytes | 991 bytes |
 
   to:
 
@@ -18,9 +18,9 @@ Running "file_info:inject_multiple_dest_2" (file_info) task
   | :------- | --------: | --------: |
   | Original |   22.1 kB |     28 kB |
   | Minified |   16.4 kB |   16.4 kB |
-  | Gzipped  | 601 bytes | 601 bytes |
+  | Gzipped  | 974 bytes | 974 bytes |
 
-  Updating inject_multiple_dest_2 sizes in test/actual/inject_dest_2.txt from:
+  Updating inject_multiple_dest_2 stats in test/actual/inject_dest_2.txt from:
 
   ###Size
   
@@ -28,7 +28,7 @@ Running "file_info:inject_multiple_dest_2" (file_info) task
   | :------- | --------: | --------: |
   | Original |           |   22.1 kB |
   | Minified |           |     18 kB |
-  | Gzipped  |           | 615 bytes |
+  | Gzipped  |           | 991 bytes |
 
   to:
 
@@ -38,9 +38,9 @@ Running "file_info:inject_multiple_dest_2" (file_info) task
   | :------- | --------: | --------: |
   | Original |           |     28 kB |
   | Minified |           |   16.4 kB |
-  | Gzipped  |           | 601 bytes |
+  | Gzipped  |           | 974 bytes |
 
-  Updating inject_multiple_dest_2 sizes in test/actual/inject_dest_3.txt from:
+  Updating inject_multiple_dest_2 stats in test/actual/inject_dest_3.txt from:
 
   ###Size
   
@@ -48,7 +48,7 @@ Running "file_info:inject_multiple_dest_2" (file_info) task
   | :------- | --------: | --------: |
   | Original |   22.1 kB |           |
   | Minified |     18 kB |           |
-  | Gzipped  | 615 bytes |           |
+  | Gzipped  | 991 bytes |           |
 
   to:
 
@@ -58,11 +58,11 @@ Running "file_info:inject_multiple_dest_2" (file_info) task
   | :------- | --------: | --------: |
   | Original |     28 kB |           |
   | Minified |   16.4 kB |           |
-  | Gzipped  | 601 bytes |           |
+  | Gzipped  | 974 bytes |           |
 
-  inject_multiple_dest_2 file sizes:
+  inject_multiple_dest_2 stats:
 
-  test/fixtures/source_file_v2.js             28 kB (878 bytes gzipped)
-  test/fixtures/minified_source_file.js       16.4 kB (601 bytes gzipped)
+  test/fixtures/source_file_v2.js             28 kB (1.4 kB gzipped)
+  test/fixtures/minified_source_file.js       16.4 kB (974 bytes gzipped)
 
 Done, without errors.
