@@ -196,7 +196,7 @@ module.exports = function(grunt) {
   }
 
   function gzipSize(filepath) {
-    return require('zlib-browserify').gzipSync(grunt.file.read(filepath)).length;
+    return require('zlib-browserify').gzipSync(Buffer(grunt.file.read(filepath))).length;
   }
 
   // return size string; optionally left-pad; optionally integer-right-align for easy comparison
