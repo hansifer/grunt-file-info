@@ -40,7 +40,7 @@ module.exports = function(grunt) {
     grunt.template.addDelimiters('doubleBrace', '{{', '}}');
 
     if (this.options().inject) {
-      var defaultInjectReport = !('injectReport' in this.options()) || !! this.options().injectReport;
+      var defaultInjectReport = !('injectReport' in this.options()) || !!this.options().injectReport;
       if (grunt.util._.isArray(this.options().inject)) {
         this.options().inject.forEach(function(injectConfig) {
           processInject.call(that, injectConfig, defaultInjectReport);
@@ -236,7 +236,7 @@ module.exports = function(grunt) {
     }
 
     if (lpadding) {
-      return grunt.util.repeat((align ? lpadding : lpadding - sizeStr.length), ' ') + sizeStr;
+      return grunt.util.repeat(Math.max(align ? lpadding : lpadding - sizeStr.length, 0), ' ') + sizeStr;
     } else {
       return sizeStr;
     }
