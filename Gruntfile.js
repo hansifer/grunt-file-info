@@ -8,7 +8,7 @@
 
 'use strict';
 
-module.exports = function(grunt) {
+module.exports = grunt => {
 	var stdout_template_1 = '{{ var i=0; _.forEach(filesSrc, function(filepath) { }}' + grunt.util.linefeed + '{{- _.lpad(++i,4,"0").cyan }}' + grunt.util.linefeed + 'Path: {{- filepath }}' + grunt.util.linefeed + 'Name: {{- filename(filepath) }}' + grunt.util.linefeed + 'Type: {{- filetype(filepath) }}' + grunt.util.linefeed + 'Size: {{- sizeText(size(filepath)) }}' + grunt.util.linefeed + 'Gzip: {{- sizeText(gzipSize(filepath)) }} ({{- spaceSavings(filepath) }}% savings)' + grunt.util.linefeed + 'Date: {{- modified(filepath).toDateString() }}' + grunt.util.linefeed + '{{ }); }}';
 
 	var stdout_template_2 = grunt.util.linefeed + 'Original: {{= sizeText(size(filesSrc[0]), 7) }}' + grunt.util.linefeed + 'Minified: {{= sizeText(size(filesSrc[1]), 7) }}' + grunt.util.linefeed + 'Gzipped:  {{= sizeText(gzipSize(filesSrc[1]), 7) }} ({{= spaceSavings(filesSrc[1]) }}% savings)' + grunt.util.linefeed;
@@ -37,7 +37,7 @@ module.exports = function(grunt) {
 
 		exec: {
 			stdout_test: {
-				cmd: function(name) {
+				cmd(name) {
 					// sed below removes unix color codes
 					return 'grunt file_info:' + name + ' | sed -r "s/\\x1B\\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g" > test/actual/stdout_' + name + '.txt';
 				}

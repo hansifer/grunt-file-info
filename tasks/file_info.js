@@ -8,7 +8,7 @@
 
 'use strict';
 
-module.exports = function(grunt) {
+module.exports = grunt => {
 
   // Please see the Grunt documentation for more information regarding task
   // creation: http://gruntjs.com/creating-tasks
@@ -42,7 +42,7 @@ module.exports = function(grunt) {
     if (this.options().inject) {
       var defaultInjectReport = !('injectReport' in this.options()) || !!this.options().injectReport;
       if (grunt.util._.isArray(this.options().inject)) {
-        this.options().inject.forEach(function(injectConfig) {
+        this.options().inject.forEach(injectConfig => {
           processInject.call(that, injectConfig, defaultInjectReport);
         });
       } else {
@@ -54,11 +54,11 @@ module.exports = function(grunt) {
       grunt.log.writeln(grunt.util.linefeed + (('  ' + this.target + ' stats:').cyan) + grunt.util.linefeed);
 
       var colWidth = 0;
-      this.filesSrc.forEach(function(filepath) {
+      this.filesSrc.forEach(filepath => {
         colWidth = Math.max(filepath.length, colWidth);
       });
 
-      this.filesSrc.forEach(function(filepath) {
+      this.filesSrc.forEach(filepath => {
         grunt.log.writeln('  ' + grunt.util._.rpad(filepath, colWidth + 1).grey + sizeText(size(filepath), 8, true).grey + (' (' + sizeText(gzipSize(filepath)) + ' gzipped)').grey);
       });
     } else if (this.options().stdout) {
@@ -77,7 +77,7 @@ module.exports = function(grunt) {
     }
 
     if (grunt.util._.isArray(injectConfig.dest)) {
-      injectConfig.dest.forEach(function(dest) {
+      injectConfig.dest.forEach(dest => {
         processInjectDest.call(that, dest, injectConfig.text, report);
       });
     } else {
@@ -90,7 +90,10 @@ module.exports = function(grunt) {
       report && grunt.log.writeln(grunt.util.linefeed + '  ' + str);
     }
 
-    var newValues, i, fileContents, output;
+    var newValues;
+    var i;
+    var fileContents;
+    var output;
     var fieldDiffs = {}; // for values that either increased or decreased, add a property where name is fieldIndex and value is bytes delta (positive if up, negative if down)
 
     var reTemplateField = new RegExp('\\{\\{.*?\\}\\}', 'g');
@@ -134,9 +137,7 @@ module.exports = function(grunt) {
             // output to file
 
             i = 1;
-            output = text.replace(reTemplateField, function() {
-              return newValues[i++];
-            });
+            output = text.replace(reTemplateField, () => newValues[i++]);
             grunt.file.write(dest, fileContents.replace(re, output));
 
             // output to command line
@@ -155,7 +156,7 @@ module.exports = function(grunt) {
               // have to gen output string again for color-coded cli output
 
               i = 1;
-              output = text.replace(reTemplateField, function() {
+              output = text.replace(reTemplateField, () => {
                 var ret = newValues[i];
 
                 if (fieldDiffs[i] > 0) {
@@ -278,7 +279,8 @@ module.exports = function(grunt) {
   // else, return 1 if strings differ, 0 if same
 
   function fieldDiff(str1, str2) {
-    var float1, float2;
+    var float1;
+    var float2;
 
     if (!grunt.util._.isUndefined(str1) && str1 !== str2) {
       if (isFileSize(str1) && isFileSize(str2)) {
