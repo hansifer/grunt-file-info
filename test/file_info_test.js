@@ -31,11 +31,12 @@ function escapeRegExp(iStr) {
 function addComparisonTest(obj, name, filenames, type, desc) {
 	type = type || 'contains';
 
-	obj[name] = function(test) {
-		test.expect(filenames.length);
+	obj[name] = test => {
+        test.expect(filenames.length);
 
-		var actual, expected;
-		filenames.forEach(function(el) {
+        var actual;
+        var expected;
+        filenames.forEach(el => {
 			actual = grunt.file.read('test/actual/' + el);
 			expected = grunt.file.read('test/expected/' + el);
 
@@ -46,8 +47,8 @@ function addComparisonTest(obj, name, filenames, type, desc) {
 			}
 		});
 
-		test.done();
-	};
+        test.done();
+    };
 }
 
 function addStdoutComparisonTest(obj, name, type, desc) {
@@ -55,7 +56,7 @@ function addStdoutComparisonTest(obj, name, type, desc) {
 }
 
 var file_info = {
-	setUp: function(done) {
+	setUp(done) {
 		// setup here if necessary
 		done();
 	}
